@@ -33,8 +33,9 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
    func main() {
    
        registerUrl := "www.xxx.pro/get_message"
+	   xApiKey := "xxxxxx"
    
-       client := dbx_chat.CreateNormalInterface("https://open.debox.pro", "xxxxx")
+       client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
    
        _, err := client.RegisterCallbakUrl(registerUrl, "POST", "register")
    
@@ -62,8 +63,9 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
    
    func main() {
    
-       client := dbx_chat.CreateNormalInterface("https://open.debox.pro", "xxxxx")
-   
+       xApiKey := "xxxxxx"
+       client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
+
        toUserId := ""
        groupId := ""
        message := ""

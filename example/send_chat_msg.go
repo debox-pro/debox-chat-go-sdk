@@ -7,7 +7,8 @@ import (
 
 func main() {
 
-	client := dbx_chat.CreateNormalInterface("https://open.debox.pro", "xxxxx")
+	xApiKey := "xxxxxx"
+	client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
 
 	toUserId := ""
 	groupId := ""
