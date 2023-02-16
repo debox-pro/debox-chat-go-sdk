@@ -1,26 +1,81 @@
-# debox-chat-go-sdk
-This is a Golang SDK for Debox Chat Service.
+## User Guide （中文）
 
+[README  in English](https://github.com/debox-pro/debox-chat-go-sdk/blob/master/README_EN.md)
 
-API Reference :
-* [English](https://help.debox.pro/openapi_cn/o/summary)
+### 基本介绍
 
+本项目是Debox社交聊天服务（Chat Service）API的Golang编程接口，Chat Service Rest API的封装和实现，帮助Golang开发人员更快编程使用Debox的聊天消息服务。
 
-# Install Instruction
+详细API接口以及含义请参考：https://help.debox.pro/openapi_cn/a/api_method
 
-### Debox Chat Golang SDK
-
+### 安装
 ```
-go get github.com/debox-pro/debox-chat-go-sdk
+go get -u github.com/debox-pro/debox-chat-go-sdk
 ```
 
-# Example
 
-### Register callback url
+### 快速入门
 
-[loghub_sample.go](example/register_url.go)
+**前言:**   所有的使用样例都位于[example](https://github.com/debox-pro/debox-chat-go-sdk/tree/master/example)目录下。
 
-### Send chat message
+1. **注册回调地址**
 
-[index_sample.go](example/send_chat_msg.go)
+   参考[register_url_sample.go](example/register_url.go)
+
+   ```go
+   package main
+
+   import (
+       "fmt"
+       dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
+   )
+   
+   func main() {
+   
+       registerUrl := "www.xxx.pro/get_message"
+   
+       client := dbx_chat.CreateNormalInterface("https://open.debox.pro", "xxxxx")
+   
+       _, err := client.RegisterCallbakUrl(registerUrl, "POST", "register")
+   
+       if err != nil {
+           fmt.Println("register callback url  fail:", err)
+           return
+       }
+   
+       fmt.Println("register callback url success.")
+   
+   }
+   ```
+
+2. **发送会话消息**
+
+   参考 [send_chat_msg_sample.go](example/send_chat_msg.go)
+
+   ```go 
+   package main
+
+   import (
+       "fmt"
+       dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
+   )
+   
+   func main() {
+   
+       client := dbx_chat.CreateNormalInterface("https://open.debox.pro", "xxxxx")
+   
+       toUserId := ""
+       groupId := ""
+       message := ""
+       _, err := client.SendChatMsg(toUserId, groupId, message, "send_msg")
+   
+       if err != nil {
+           fmt.Println("send chat message fail:", err)
+           return
+       }
+   
+       fmt.Println("send chat message success.")
+   
+   }
+   ```
 
