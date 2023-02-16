@@ -18,6 +18,7 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
 
 **前言:**   所有的使用样例都位于[example](https://github.com/debox-pro/debox-chat-go-sdk/tree/master/example)目录下。
 
+
 1. **注册回调地址**
 
    参考[register_url_sample.go](example/register_url.go)
