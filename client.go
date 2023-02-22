@@ -121,8 +121,8 @@ func (c *Client) ResetAccessKeyToken(xApiKey string) {
 // SendChatMsg send recall message.
 func (c *Client) SendChatMsg(toUserId, groupId, message, opreate string) (*ChatProject, error) {
 	type Body struct {
-		ToUserId string `json:"projectName"`
-		GroupId  string `json:"description"`
+		ToUserId string `json:"to_user_id"`
+		GroupId  string `json:"group_id"`
 		Message  string `json:"message"`
 	}
 	body, err := json.Marshal(Body{
