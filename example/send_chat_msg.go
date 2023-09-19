@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
+	dbx_chat "github.com/bm777bm/debox-chat-go-sdk"
 )
 
 func main() {

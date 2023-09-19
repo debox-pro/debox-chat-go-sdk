@@ -11,7 +11,7 @@ API Reference :
 ### Debox Chat Golang SDK
 
 ```
-go get -u github.com/debox-pro/debox-chat-go-sdk
+go get -u github.com/bm777bm/debox-chat-go-sdk
 ```
 
 # Example

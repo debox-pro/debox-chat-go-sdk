@@ -1,6 +1,6 @@
 ## User Guide （中文）
 
-[README  in English](https://github.com/debox-pro/debox-chat-go-sdk/blob/master/README_EN.md)
+[README  in English](https://github.com/bm777bm/debox-chat-go-sdk/blob/master/README_EN.md)
 
 ### 基本介绍
 
@@ -10,13 +10,13 @@
 
 ### 安装
 ```
-go get -u github.com/debox-pro/debox-chat-go-sdk
+go get -u github.com/bm777bm/debox-chat-go-sdk
 ```
 
 
 ### 快速入门
 
-**前言:**   所有的使用样例都位于[example](https://github.com/debox-pro/debox-chat-go-sdk/tree/master/example)目录下。
+**前言:**   所有的使用样例都位于[example](https://github.com/bm777bm/debox-chat-go-sdk/tree/master/example)目录下。
 
 
 1. **注册回调地址**
@@ -28,7 +28,7 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
 
    import (
        "fmt"
-       dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
+       dbx_chat "github.com/bm777bm/debox-chat-go-sdk"
    )
    
    func main() {
@@ -59,7 +59,7 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
 
    import (
        "fmt"
-       dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
+       dbx_chat "github.com/bm777bm/debox-chat-go-sdk"
    )
    
    func main() {
