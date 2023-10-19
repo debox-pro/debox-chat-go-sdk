@@ -102,7 +102,7 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
        fromUserId := ""
        objectName := ""
        message := ""
-       _, err := client.SendRobotMsg(toUserId, fromUserId, message, objectName, "send_robot_msg")
+       _, err := client.SendRobotMsg(toUserId, message, objectName, "send_robot_msg")
 
        if err != nil {
            fmt.Println("send chat message fail:", err)
