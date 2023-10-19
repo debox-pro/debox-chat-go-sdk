@@ -113,3 +113,39 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
    
    }
    ```
+
+
+4. **发送机器人群组消息**
+
+   参考 [send_robot_group_msg_sample.go](example/send_robot_group_msg.go)
+
+   ```go 
+   package main
+
+   import (
+       "fmt"
+       dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
+   )
+   
+   func main() {
+      
+        xApiKey := ""
+	    client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
+
+	    toUserId := ""
+	    groupId := ""
+	    title := ""
+	    content := ""
+	    objectName := ""
+	    message := ""
+	    _, err := client.SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, "send_robot_group_msg")
+
+	    if err != nil {
+		    fmt.Println("send chat message fail:", err)
+		return
+	    }
+
+	    fmt.Println("send chat message success.")
+   
+   }
+   ```

@@ -7,7 +7,7 @@ import (
 
 func main() {
 
-	xApiKey := "xxxxxx"
+	xApiKey := "8umgkn795xaqjx9j"
 	client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
 
 	toUserId := ""
