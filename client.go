@@ -184,6 +184,42 @@ func (c *Client) RegisterCallbakUrl(url, method, operate string) (*ChatProject, 
 	return proj, nil
 }
 
+// SendRobotMsg send recall message.
+func (c *Client) SendRobotMsg(toUserId, fromUserId, message, objectName, opreate string) (*ChatProject, error) {
+	type Body struct {
+		ToUserId   string `json:"to_user_id"`
+		FromUserId string `json:"from_user_id"`
+		ObjectName string `json:"object_name"`
+		Message    string `json:"message"`
+	}
+	body, err := json.Marshal(Body{
+		ToUserId:   toUserId,
+		FromUserId: fromUserId,
+		ObjectName: objectName,
+		Message:    message,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	h := map[string]string{
+		"x-chat-bodyrawsize": fmt.Sprintf("%d", len(body)),
+		"Content-Type":       "application/json",
+		"Accept-Encoding":    "deflate",
+		"X-API-KEY":          c.XApiKey,
+	}
+
+	uri := "/openapi/send_robot_message"
+	proj := convert(c, opreate)
+	resp, err := c.request("", "POST", uri, h, body)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+	return proj, nil
+}
+
 func convert(c *Client, projName string) *ChatProject {
 	c.accessKeyLock.RLock()
 	defer c.accessKeyLock.RUnlock()

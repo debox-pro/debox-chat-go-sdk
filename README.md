@@ -9,15 +9,14 @@
 详细API接口以及含义请参考：https://help.debox.pro/openapi_cn/a/api_method
 
 ### 安装
+
 ```
 go get -u github.com/debox-pro/debox-chat-go-sdk
 ```
 
-
 ### 快速入门
 
 **前言:**   所有的使用样例都位于[example](https://github.com/debox-pro/debox-chat-go-sdk/tree/master/example)目录下。
-
 
 1. **注册回调地址**
 
@@ -34,7 +33,7 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
    func main() {
    
        registerUrl := "www.xxx.pro/get_message"
-	   xApiKey := "xxxxxx"
+       xApiKey := "xxxxxx"
    
        client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
    
@@ -82,3 +81,35 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
    }
    ```
 
+3. **发送机器人消息**
+
+   参考 [send_robot_msg_sample.go](example/send_robot_msg.go)
+
+   ```go 
+   package main
+
+   import (
+       "fmt"
+       dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
+   )
+   
+   func main() {
+   
+       xApiKey := "xxxxxx"
+       client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
+
+       toUserId := ""
+       fromUserId := ""
+       objectName := ""
+       message := ""
+       _, err := client.SendRobotMsg(toUserId, fromUserId, message, objectName, "send_robot_msg")
+
+       if err != nil {
+           fmt.Println("send chat message fail:", err)
+           return
+       }
+
+       fmt.Println("send chat message success.")
+   
+   }
+   ```

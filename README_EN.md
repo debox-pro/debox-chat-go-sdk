@@ -24,3 +24,6 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
 
 [send_chat_msg_sample.go](example/send_chat_msg.go)
 
+### Send chat message
+
+[send_robot_msg_sample.go](example/send_robot_msg.go)

@@ -1,6 +1,6 @@
 module github.com/debox-pro/debox-chat-go-sdk
 
-go 1.18
+go 1.20
 
 require (
 	github.com/cenkalti/backoff v2.2.1+incompatible
