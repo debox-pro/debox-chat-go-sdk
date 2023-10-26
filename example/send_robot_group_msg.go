@@ -14,7 +14,7 @@ func main() {
 	groupId := ""    //群组id
 	title := ""      //消息标题
 	content := ""    //消息内容
-	objectName := "" //消息类型（ "RC:TxtMsg"  文本消息； "RC:Graphic" 图文消息）
+	objectName := "" //消息类型（ "RC:TxtMsg"  文本消息； "RCD:Graphic" 图文消息）
 	message := ""    //图文消息链接
 	_, err := client.SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, "send_robot_group_msg")
 
