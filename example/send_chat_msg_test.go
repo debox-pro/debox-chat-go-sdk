@@ -7,7 +7,10 @@ import (
 	dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
 )
 
-//往群里发
+//该函数用来发文字消息，发群消息。
+//如果apikey绑定了debox用户则以debox用户的名义发送消息，具体某个用户
+//如果没绑定debox账户，则以机器人的名义发送消息，chatbot
+
 //toUserId 表示@谁，可以为空
 //groupId 发到哪个群里，required
 //message 发送的消息，required
