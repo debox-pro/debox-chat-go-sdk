@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+
 	dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
 )
 
-func main() {
+func main1() {
 
 	registerUrl := "www.xxx.pro/get_message"
 	xApiKey := "xxxxxx"

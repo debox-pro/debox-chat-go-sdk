@@ -67,7 +67,7 @@ func (c *Client) request(project, method, uri string, headers map[string]string,
 	if !GlobalForceUsingHTTP && usingHTTPS {
 		urlStr = "https://"
 	} else {
-		urlStr = "https://"
+		urlStr = "http://"
 	}
 	urlStr += hostStr + uri
 	req, err := http.NewRequest(method, urlStr, reader)

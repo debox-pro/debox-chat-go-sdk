@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+
 	dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
 )
 
-func main() {
+func main3() {
 
 	xApiKey := ""
 	client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
