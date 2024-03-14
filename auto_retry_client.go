@@ -49,7 +49,7 @@ func (c *AutoRetryClient) ResetAccessKeyToken(xApiKey string) {
 func (c *AutoRetryClient) SendChatMsg(toUserId, groupId, message, operate string) (prj *ChatProject, err error) {
 	for i := 0; i < c.maxTryTimes; i++ {
 		prj, err = c.chatClient.SendChatMsg(toUserId, groupId, message, operate)
-		if err != nil {
+		if err == nil {
 			return
 		}
 	}
@@ -59,7 +59,7 @@ func (c *AutoRetryClient) SendChatMsg(toUserId, groupId, message, operate string
 func (c *AutoRetryClient) RegisterCallbakUrl(url, method, operate string) (prj *ChatProject, err error) {
 	for i := 0; i < c.maxTryTimes; i++ {
 		prj, err = c.chatClient.RegisterCallbakUrl(url, method, operate)
-		if err != nil {
+		if err == nil {
 			return
 		}
 	}
@@ -69,7 +69,7 @@ func (c *AutoRetryClient) RegisterCallbakUrl(url, method, operate string) (prj *
 func (c *AutoRetryClient) SendRobotMsg(toUserId, message, objectName, operate string) (prj *ChatProject, err error) {
 	for i := 0; i < c.maxTryTimes; i++ {
 		prj, err = c.chatClient.SendRobotMsg(toUserId, message, objectName, operate)
-		if err != nil {
+		if err == nil {
 			return
 		}
 	}
@@ -79,7 +79,7 @@ func (c *AutoRetryClient) SendRobotMsg(toUserId, message, objectName, operate st
 func (c *AutoRetryClient) SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, operate string) (prj *ChatProject, err error) {
 	for i := 0; i < c.maxTryTimes; i++ {
 		prj, err = c.chatClient.SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, operate)
-		if err != nil {
+		if err == nil {
 			return
 		}
 	}
