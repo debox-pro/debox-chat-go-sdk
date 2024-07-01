@@ -76,9 +76,9 @@ func (c *AutoRetryClient) SendRobotMsg(toUserId, message, objectName, operate st
 	return
 }
 
-func (c *AutoRetryClient) SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, operate string) (prj *ChatProject, err error) {
+func (c *AutoRetryClient) SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, operate, href string) (prj *ChatProject, err error) {
 	for i := 0; i < c.maxTryTimes; i++ {
-		prj, err = c.chatClient.SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, operate)
+		prj, err = c.chatClient.SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, operate, href)
 		if err != nil {
 			return
 		}

@@ -124,6 +124,5 @@ func (c *Client) request(project, method, uri string, headers map[string]string,
 		}
 		level.Info(Logger).Log("msg", "HTTP Response:\n%v", string(dump))
 	}
-
 	return resp, nil
 }

@@ -50,8 +50,8 @@ type ClientInterface interface {
 	Close() error
 
 	// #################### Chat Operations #####################
-	SendChatMsg(toUserId, groupId, message, operate string) (*ChatProject, error)
+	SendChatMsg(toUserId, groupId, message, operate string) (*ChatProject, error) //old
 	RegisterCallbakUrl(url, method, operate string) (*ChatProject, error)
 	SendRobotMsg(toUserId, message, objectName, operate string) (*ChatProject, error)
-	SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, operate string) (*ChatProject, error)
+	SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, operate, href string) (*ChatProject, error)
 }

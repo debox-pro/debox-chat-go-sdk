@@ -18,13 +18,13 @@ import (
 
 func TestSendChatMsg_Text(t *testing.T) {
 
-	xApiKey := "t2XJiou2Mu6AlEF6" //正式环境key  370400917@qq.com 绑定的是 xu2
+	xApiKey := "t2XJi..." //正式环境key  370400917@qq.com 绑定的是 xu2
 	client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
 
-	toUserId := "uvg2p6ho"
-	groupId := "fxi3hqo5"
-	message := "测试 SendChatMsg"
+	groupId := "l3ixp32y" //test1
+	message := "测试 SendChatMsg1"
 	msgType := "send_msg"
+	toUserId := "uvg2p6ho"
 	_, err := client.SendChatMsg(toUserId, groupId, message, msgType)
 
 	if err != nil {

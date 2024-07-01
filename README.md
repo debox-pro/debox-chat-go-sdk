@@ -1,12 +1,12 @@
 ## User Guide （中文）
 
-[README  in English](https://github.com/debox-pro/debox-chat-go-sdk/blob/master/README_EN.md)
+[README in English](https://github.com/debox-pro/debox-chat-go-sdk/blob/master/README_EN.md)
 
 ### 基本介绍
 
-本项目是Debox社交聊天服务（Chat Service）API的Golang编程接口，Chat Service Rest API的封装和实现，帮助Golang开发人员更快编程使用Debox的聊天消息服务。
+本项目是 Debox 社交聊天服务（Chat Service）API 的 Golang 编程接口，Chat Service Rest API 的封装和实现，帮助 Golang 开发人员更快编程使用 Debox 的聊天消息服务。
 
-详细API接口以及含义请参考：https://help.debox.pro/openapi_cn/a/api_method
+详细 API 接口以及含义请参考：https://help.debox.pro/openapi_cn/a/api_method
 
 ### 安装
 
@@ -16,7 +16,7 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
 
 ### 快速入门
 
-**前言:**   所有的使用样例都位于[example](https://github.com/debox-pro/debox-chat-go-sdk/tree/master/example)目录下。
+**前言:** 所有的使用样例都位于[example](https://github.com/debox-pro/debox-chat-go-sdk/tree/master/example)目录下。
 
 1. **注册回调地址**
 
@@ -29,23 +29,23 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
        "fmt"
        dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
    )
-   
+
    func main() {
-   
+
        registerUrl := "www.xxx.pro/get_message"
        xApiKey := "xxxxxx"
-   
+
        client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
-   
+
        _, err := client.RegisterCallbakUrl(registerUrl, "POST", "register")
-   
+
        if err != nil {
            fmt.Println("register callback url  fail:", err)
            return
        }
-   
+
        fmt.Println("register callback url success.")
-   
+
    }
    ```
 
@@ -53,16 +53,16 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
 
    参考 [send_chat_msg_sample.go](example/send_chat_msg.go)
 
-   ```go 
+   ```go
    package main
 
    import (
        "fmt"
        dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
    )
-   
+
    func main() {
-   
+
        xApiKey := "xxxxxx"
        client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
 
@@ -70,14 +70,14 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
        groupId := ""
        message := ""
        _, err := client.SendChatMsg(toUserId, groupId, message, "send_msg")
-   
+
        if err != nil {
            fmt.Println("send chat message fail:", err)
            return
        }
-   
+
        fmt.Println("send chat message success.")
-   
+
    }
    ```
 
@@ -85,16 +85,16 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
 
    参考 [send_robot_msg_sample.go](example/send_robot_msg.go)
 
-   ```go 
+   ```go
    package main
 
    import (
        "fmt"
        dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
    )
-   
+
    func main() {
-   
+
        xApiKey := "xxxxxx"
        client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
 
@@ -110,42 +110,41 @@ go get -u github.com/debox-pro/debox-chat-go-sdk
        }
 
        fmt.Println("send chat message success.")
-   
+
    }
    ```
-
 
 4. **发送机器人群组消息**
 
    参考 [send_robot_group_msg_sample.go](example/send_robot_group_msg.go)
 
-   ```go 
+   ```go
    package main
 
    import (
        "fmt"
        dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
    )
-   
+
    func main() {
-      
+
         xApiKey := ""
-	    client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
+       client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
 
-	    toUserId := ""
-	    groupId := ""
-	    title := ""
-	    content := ""
-	    objectName := ""
-	    message := ""
-	    _, err := client.SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, "send_robot_group_msg")
+       toUserId := ""
+       groupId := ""
+       title := ""
+       content := ""
+       objectName := ""
+       message := ""
+       _, err := client.SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, "send_robot_group_msg")
 
-	    if err != nil {
-		    fmt.Println("send chat message fail:", err)
-		return
-	    }
+       if err != nil {
+   	    fmt.Println("send chat message fail:", err)
+   	return
+       }
 
-	    fmt.Println("send chat message success.")
-   
+       fmt.Println("send chat message success.")
+
    }
    ```
