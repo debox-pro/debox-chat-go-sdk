@@ -220,7 +220,7 @@ func (c *Client) SendRobotMsg(toUserId, message, objectName, opreate string) (*C
 }
 
 // SendRobotMsg send recall message.
-func (c *Client) SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, operate string) (*ChatProject, error) {
+func (c *Client) SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, operate, href string) (*ChatProject, error) {
 	type Body struct {
 		ToUserId   string `json:"to_user_id"`
 		GroupId    string `json:"group_id"`
@@ -228,6 +228,7 @@ func (c *Client) SendRobotGroupMsg(toUserId, groupId, title, content, message, o
 		Content    string `json:"content"`
 		Message    string `json:"message"`
 		ObjectName string `json:"object_name"`
+		Href       string `json:"href"`
 	}
 	body, err := json.Marshal(Body{
 		ToUserId:   toUserId,
@@ -236,6 +237,7 @@ func (c *Client) SendRobotGroupMsg(toUserId, groupId, title, content, message, o
 		Content:    content,
 		ObjectName: objectName,
 		Message:    message,
+		Href:       href,
 	})
 	if err != nil {
 		return nil, err
