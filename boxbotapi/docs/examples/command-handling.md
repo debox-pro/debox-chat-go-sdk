@@ -6,21 +6,23 @@ This is a simple example of changing behavior based on a provided command.
 package main
 
 import (
+	"fmt"
 	"log"
-	"os"
 
 	boxbotapi "github.com/debox-pro/debox-chat-go-sdk/boxbotapi"
 )
 
 func main() {
-	bot, err := boxbotapi.NewBotAPI(os.Getenv("DEBOX_APITOKEN"))
+	fmt.Println("Hello, world!")
+	// bot, err := boxbotapi.NewBotAPI(os.Getenv("DEBOX_APITOKEN"))
+	bot, err := boxbotapi.NewBotAPI("pPpHtOTtXsE6i5u6auo57")//change this to your own token
 	if err != nil {
 		log.Panic(err)
 	}
 
 	bot.Debug = true
 
-	log.Printf("Authorized on account %s", bot.Self.UserName)
+	log.Printf("Authorized on account %s", bot.Self.Name)
 
 	u := boxbotapi.NewUpdate(0)
 	u.Timeout = 60
@@ -34,7 +36,7 @@ func main() {
 
 		// Create a new MessageConfig. We don't have text yet,
 		// so we leave it empty.
-		msg := boxbotapi.NewMessage(update.Message.Chat.ID, "")
+		msg := boxbotapi.NewMessage(update.Message.Chat.ID, update.Message.Chat.Type, "")
 
 		// Extract the command from the Message.
 		switch update.Message.Text {
