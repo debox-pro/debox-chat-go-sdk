@@ -8,8 +8,6 @@ import (
 func TestUserStringWith(t *testing.T) {
 	user := User{
 		UserId:       "dfdfd",
-		FirstName:    "Test",
-		LastName:     "Test",
 		Name:         "",
 		LanguageCode: "en",
 		IsBot:        false,
@@ -23,8 +21,6 @@ func TestUserStringWith(t *testing.T) {
 func TestUserStringWithUserName(t *testing.T) {
 	user := User{
 		UserId:       "fdfd",
-		FirstName:    "Test",
-		LastName:     "Test",
 		Name:         "@test",
 		LanguageCode: "en",
 	}

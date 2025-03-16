@@ -111,12 +111,6 @@ type User struct {
 	//
 	// optional
 	IsBot bool `json:"is_bot,omitempty"`
-	// FirstName user's or bot's first name
-	FirstName string `json:"first_name"`
-	// LastName user's or bot's last name
-	//
-	// optional
-	LastName string `json:"last_name,omitempty"`
 	// Name user's or bot's username
 	//
 	// optional
@@ -128,21 +122,6 @@ type User struct {
 	//
 	// optional
 	LanguageCode string `json:"language_code,omitempty"`
-	// CanJoinGroups is true, if the bot can be invited to groups.
-	// Returned only in getMe.
-	//
-	// optional
-	CanJoinGroups bool `json:"can_join_groups,omitempty"`
-	// CanReadAllGroupMessages is true, if privacy mode is disabled for the bot.
-	// Returned only in getMe.
-	//
-	// optional
-	CanReadAllGroupMessages bool `json:"can_read_all_group_messages,omitempty"`
-	// SupportsInlineQueries is true, if the bot supports inline queries.
-	// Returned only in getMe.
-	//
-	// optional
-	SupportsInlineQueries bool `json:"supports_inline_queries,omitempty"`
 }
 
 // String displays a simple text version of a user.
@@ -156,13 +135,7 @@ func (u *User) String() string {
 	if u.Name != "" {
 		return u.Name
 	}
-
-	name := u.FirstName
-	if u.LastName != "" {
-		name += " " + u.LastName
-	}
-
-	return name
+	return ""
 }
 
 // Chat represents a chat.
