@@ -2,8 +2,6 @@ package boxbotapi
 
 // DeBox constants
 const (
-	// APIEndpoint = "http://127.0.0.1:8042/openapi/bot%s/%s"
-	// APIEndpoint = "http://t.open.debox.pro/openapi/bot%s/%s"
 	APIEndpoint = "https://open.debox.pro/openapi/bot%s/%s"
 )
 
