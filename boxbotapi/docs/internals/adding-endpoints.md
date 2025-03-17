@@ -12,6 +12,8 @@ These belong in `configs.go`.
 Let's try and add the `deleteMessage` endpoint. We can see it requires two
 fields; `chat_id` and `message_id`. We can create a struct for these.
 
+Note that we do not support `deleteMessage` for the time being. We are just using `deleteMessage` as an example, and we will support it in the future.
+
 ```go
 type DeleteMessageConfig struct {
 	ChatID    ???
@@ -21,8 +23,7 @@ type DeleteMessageConfig struct {
 
 What type should `ChatID` be? DeBox allows specifying numeric chat IDs or
 channel usernames. Golang doesn't have union types, and interfaces are entirely
-untyped. This library solves this by adding two fields, a `ChatID` and a
-`ChannelUsername`. We can now write the struct as follows.
+untyped. This library solves this by adding two fields, a `ChatID`. We can now write the struct as follows.
 
 ```go
 type DeleteMessageConfig struct {
@@ -86,8 +87,7 @@ func (config DeleteMessageConfig) params() (Params, error) {
 ### Base Configs
 
 Certain Configs have repeated elements. For example, many of the items sent to a
-chat have `ChatID` or `ChannelUsername` fields, along with `ReplyToMessageID`,
-`ReplyMarkup`, and `DisableNotification`. Instead of implementing all of this
+chat have `ChatID` fields,`ReplyMarkup`. Instead of implementing all of this
 code for each item, there's a `BaseChat` that handles it for your Config.
 Simply embed it in your struct to get all of those fields.
 

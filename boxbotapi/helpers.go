@@ -115,10 +115,11 @@ func NewInlineKeyboardButtonData(text, data string) InlineKeyboardButton {
 		CallbackData: &data,
 	}
 }
-func NewInlineKeyboardButtonDataWithColor(text, data, subText, subTextColor string) InlineKeyboardButton {
+func NewInlineKeyboardButtonDataWithColor(text, data, url, subText, subTextColor string) InlineKeyboardButton {
 	return InlineKeyboardButton{
 		Text:         text,
 		CallbackData: &data,
+		URL:          &url,
 		SubText:      subText,
 		SubTextColor: subTextColor,
 	}

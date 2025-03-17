@@ -20,15 +20,14 @@ var numericKeyboard = boxbotapi.NewInlineKeyboardMarkup(
 		boxbotapi.NewInlineKeyboardButtonData("3", "3"),
 	),
 	boxbotapi.NewInlineKeyboardRow(
-		boxbotapi.NewInlineKeyboardButtonData("4", "4"),
-		boxbotapi.NewInlineKeyboardButtonData("5", "5"),
-		boxbotapi.NewInlineKeyboardButtonData("6", "6"),
+			boxbotapi.NewInlineKeyboardButtonDataWithColor("BTC", "","https://debox.pro", "15%", "#ff0000"),
+			boxbotapi.NewInlineKeyboardButtonDataWithColor("BNB", "","https://debox.pro", "27.5%", "#00ff00"),
 	),
 )
 
 func main() {
 	// bot, err := boxbotapi.NewBotAPI(os.Getenv("DEBOX_APITOKEN"))
-	bot, err := boxbotapi.NewBotAPI("pPpHtOTtXsE6i5u6")
+	bot, err := boxbotapi.NewBotAPI("pPpHtOTtXsE6i5u6auo57")
 	if err != nil {
 		log.Panic(err)
 	}

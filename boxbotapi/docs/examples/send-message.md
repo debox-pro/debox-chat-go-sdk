@@ -1,3 +1,8 @@
+# Command Handling
+
+This is a simple example of sending messages. In the form of examples, you can conveniently send messages in Markdown, HTML, and plain text formats.
+
+```go
 package main
 
 import (
@@ -156,3 +161,4 @@ func TestGetAndSend_Messages(t *testing.T) {
 		bot.Send(msg)
 	}
 }
+```

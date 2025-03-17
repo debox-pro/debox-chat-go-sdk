@@ -25,9 +25,8 @@ Methods are used to send Configs after they are constructed. Generally,
 `Request` is the lowest level method you'll have to call. It accepts a
 `Chattable` parameter and knows how to upload files if needed. It returns an
 `APIResponse`, the most general return type from the Bot API. This method is
-called for any endpoint that doesn't have a more specific return type. For
-example, `setWebhook` only returns `true` or an error. Other methods may have
-more specific return types.  Almost every other method returns a `Message`, which you can use `Send` to obtain.
+called for any endpoint that doesn't have a more specific return type.
+<span style="display: none;"> For example, `setWebhook` only returns `true` or an error. Other methods may have more specific return types.</span>  Almost every other method returns a `Message`, which you can use `Send` to obtain.
 
 There's lower level methods such as `MakeRequest` which require an endpoint and
 parameters instead of accepting configs. These are primarily used internally.

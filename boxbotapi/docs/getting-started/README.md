@@ -5,8 +5,6 @@ It's encouraged to read [DeBox's docs][debox-docs] first to get an
 understanding of what Bots are capable of doing. They also provide some good
 approaches to solve common problems.
 
-[debox-docs]: https://core.debox.org/bots
-
 ## Installing
 
 ```bash
@@ -20,9 +18,6 @@ messages repeating what you said. Make sure you get an API token from
 [@Botfather][botfather] before continuing.
 
 Let's start by constructing a new [BotAPI][bot-api-docs].
-
-[botfather]: https://t.me/Botfather
-[bot-api-docs]: https://pkg.go.dev/github.com/debox-pro/debox-chat-go-sdk/boxbotapi?tab=doc#BotAPI
 
 ```go
 package main

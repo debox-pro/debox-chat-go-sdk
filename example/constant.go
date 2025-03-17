@@ -31,8 +31,8 @@ var (
 			boxbotapi.NewInlineKeyboardButtonURL(tutorialButton, tokenUrl),
 		),
 		boxbotapi.NewInlineKeyboardRow(
-			boxbotapi.NewInlineKeyboardButtonDataWithColor("BTC", "", "61", "#ff0000"),
-			boxbotapi.NewInlineKeyboardButtonDataWithColor("BNB", "", "27.5%", "#00ff00"),
+			boxbotapi.NewInlineKeyboardButtonDataWithColor("BTC", "", tokenUrl, "61", "#ff0000"),
+			boxbotapi.NewInlineKeyboardButtonDataWithColor("BNB", "", tokenUrl, "27.5%", "#00ff00"),
 		),
 	)
 	//you can set font size and font color as follows
