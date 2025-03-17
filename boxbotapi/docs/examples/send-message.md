@@ -15,8 +15,8 @@ import (
 )
 
 const (
-	TestToken = "pPpHtOTtXsE6i5u6"//replace with your token
-	ChatID    = "ymor0jin"
+	TestToken = "oPM1uUmE6mIitDC8"//replace with your token
+	ChatID    = "l3ixp32y"
 	ChatType  = "group" //private,group
 )
 

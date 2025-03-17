@@ -13,7 +13,7 @@ import (
 func main() {
 	var err error
 	// bot, err = boxbotapi.NewBotAPI("<YOUR_BOT_TOKEN_HERE>")//replace with your token
-	bot, err = boxbotapi.NewBotAPIWithClient("pPpHtOTtXsE6i5u6", boxbotapi.APIEndpoint, nil)
+	bot, err = boxbotapi.NewBotAPIWithClient("oPM1uUmE6mIitDC8", boxbotapi.APIEndpoint, nil)
 	if err != nil {
 		// Abort if something is wrong
 		log.Panic(err)

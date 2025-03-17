@@ -30,7 +30,7 @@ var (
 
 func main() {
 	// bot, err := boxbotapi.NewBotAPI(os.Getenv("DEBOX_APITOKEN"))
-	bot, err := boxbotapi.NewBotAPI("pPpHtOTtXsE6i5u6")
+	bot, err := boxbotapi.NewBotAPI("oPM1uUmE6mIitDC8")
 	if err != nil {
 		log.Panic(err)
 	}
