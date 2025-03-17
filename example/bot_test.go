@@ -111,12 +111,12 @@ func TestSendRichText(t *testing.T) {
 		Href:  href,
 	}
 	uiAJson, _ := json.Marshal(uiA)
-	content := "richtext" + string(jsonUIImgHead) + string(uiImgFootJson) + string(uiAJson)
+	content := "richtext https://debox.pro " + string(jsonUIImgHead) + string(uiImgFootJson) + string(uiAJson)
 	//发送
 	bot, _ := getBot(t)
 
 	msg := boxbotapi.NewMessage(ChatID, ChatType, content)
-	msg.ParseMode = boxbotapi.ModeRichText
+	// msg.ParseMode = boxbotapi.ModeRichText
 	_, err := bot.Send(msg)
 
 	if err != nil {
