@@ -13,21 +13,24 @@ import (
 	boxbotapi "github.com/debox-pro/debox-chat-go-sdk/boxbotapi"
 )
 
-var numericKeyboard = boxbotapi.NewInlineKeyboardMarkup(
-	boxbotapi.NewInlineKeyboardRow(
-		boxbotapi.NewInlineKeyboardButtonURL("1.com", "https://debox.pro"),
-		boxbotapi.NewInlineKeyboardButtonData("2", "2"),
-		boxbotapi.NewInlineKeyboardButtonData("3", "3"),
-	),
-	boxbotapi.NewInlineKeyboardRow(
-			boxbotapi.NewInlineKeyboardButtonDataWithColor("BTC", "","https://debox.pro", "15%", "#ff0000"),
-			boxbotapi.NewInlineKeyboardButtonDataWithColor("BNB", "","https://debox.pro", "27.5%", "#00ff00"),
-	),
+var (
+	swapUrl         = "https://deswap.pro/?from_chain_id=1&from_address=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to_chain_id=1&to_address=0x32b77729cd87f1ef2bea4c650c16f89f08472c69&native=true"
+	numericKeyboard = boxbotapi.NewInlineKeyboardMarkup(
+		boxbotapi.NewInlineKeyboardRow(
+			boxbotapi.NewInlineKeyboardButtonURL("debox", "https://debox.pro"),
+			boxbotapi.NewInlineKeyboardButtonData("2", "2"),
+			boxbotapi.NewInlineKeyboardButtonData("3", "3"),
+		),
+		boxbotapi.NewInlineKeyboardRow(
+			boxbotapi.NewInlineKeyboardButtonDataWithColor("BOX", "", swapUrl, "15%", "#ff0000"),
+			boxbotapi.NewInlineKeyboardButtonDataWithColor("BTC", "", "https://debox.pro", "27.5%", "#00ff00"),
+		),
+	)
 )
 
 func main() {
 	// bot, err := boxbotapi.NewBotAPI(os.Getenv("DEBOX_APITOKEN"))
-	bot, err := boxbotapi.NewBotAPI("pPpHtOTtXsE6i5u6auo57")
+	bot, err := boxbotapi.NewBotAPI("pPpHtOTtXsE6i5u6")
 	if err != nil {
 		log.Panic(err)
 	}
@@ -51,7 +54,7 @@ func main() {
 
 			// If the message was open, add a copy of our numeric keyboard.
 			switch update.Message.Text {
-			case "open":
+			case "/menu":
 				msg.ReplyMarkup = numericKeyboard
 				msg.ParseMode = boxbotapi.ModeRichText
 			}

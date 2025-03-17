@@ -15,7 +15,7 @@ import (
 func main() {
 	fmt.Println("Hello, world!")
 	// bot, err := boxbotapi.NewBotAPI(os.Getenv("DEBOX_APITOKEN"))
-	bot, err := boxbotapi.NewBotAPI("pPpHtOTtXsE6i5u6auo57")//change this to your own token
+	bot, err := boxbotapi.NewBotAPI("pPpHtOTtXsE6i5u6")//replace with your token
 	if err != nil {
 		log.Panic(err)
 	}

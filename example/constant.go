@@ -9,8 +9,9 @@ var (
 	// Button texts
 	nextButton     = "Next"
 	backButton     = "Back"
-	tutorialButton = "Tutorial"
-	tokenUrl       = "https://deswap.pro/?from_chain_id=-200&from_address=11111111111111111111111111111111&to_chain_id=-200&to_address=BpykKPT9DoPy2WoZspkd7MvUb9QAPtX86ojmrg48pump"
+	tutorialButton = "Box"
+	tokenUrl       = "https://deswap.pro/?from_chain_id=1&from_address=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to_chain_id=1&to_address=0x32b77729cd87f1ef2bea4c650c16f89f08472c69&native=true"
+
 	// Store bot screaming status
 	bot *boxbotapi.BotAPI
 

@@ -52,7 +52,7 @@ Bot.
 Now that we've connected to DeBox, let's start getting updates and doing
 things. We can add this code in right after the line enabling debug mode.
 
-[get-me]: https://core.debox.org/bots/api#getme
+<span style="display: none;">[get-me]: https://core.debox.pro/bots/api#getme</span>
 
 ```go
 	// Create a new UpdateConfig struct with an offset of 0. Offsets are used
