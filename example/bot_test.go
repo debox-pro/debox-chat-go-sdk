@@ -4,15 +4,28 @@ import (
 	"encoding/json"
 	"log"
 	"testing"
-	"time"
 
 	boxbotapi "github.com/debox-pro/debox-chat-go-sdk/boxbotapi"
 )
 
-const (
+var (
 	TestToken = "oPM1uUmE6mIitDC8" //replace with your token
 	ChatID    = "l3ixp32y"
-	ChatType  = "group" //private,group
+	// TestToken       = "pPpHtOTtXsE6i5u6" //replace with your token
+	// ChatID          = "ymor0jin"
+	ChatType        = "group" //private,group
+	swapUrl         = "https://deswap.pro/?from_chain_id=1&from_address=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to_chain_id=1&to_address=0x32b77729cd87f1ef2bea4c650c16f89f08472c69&native=true"
+	numericKeyboard = boxbotapi.NewInlineKeyboardMarkup(
+		boxbotapi.NewInlineKeyboardRow(
+			boxbotapi.NewInlineKeyboardButtonURL("debox", "https://debox.pro"),
+			boxbotapi.NewInlineKeyboardButtonData("2", "2"),
+			boxbotapi.NewInlineKeyboardButtonData("3", "3"),
+		),
+		boxbotapi.NewInlineKeyboardRow(
+			boxbotapi.NewInlineKeyboardButtonDataWithColor("BOX", "", swapUrl, "15%", "#ff0000"),
+			boxbotapi.NewInlineKeyboardButtonDataWithColor("BTC", "", "https://debox.pro", "27.5%", "#00ff00"),
+		),
+	)
 )
 
 type testLogger struct {
@@ -84,8 +97,8 @@ func TestSendHTMLMessage(t *testing.T) {
 	}
 }
 func TestSendRichText(t *testing.T) {
-	var imageOne = "https://data.debox.space/dao/newpic/one.png"
-	var imageTwo = "https://data.debox.space/dao/newpic/two.png"
+	var imageOne = "https://data.debox.pro/dao/newpic/one.png"
+	var imageTwo = "https://data.debox.pro/dao/newpic/two.png"
 	var href = "https://app.debox.pro/"
 	var uiImgHead = boxbotapi.UITagImg{
 		Uitag:    "img",
@@ -125,9 +138,10 @@ func TestSendRichText(t *testing.T) {
 }
 
 func TestGetAndSend_Messages(t *testing.T) {
+	// bot, err := boxbotapi.NewBotAPI(os.Getenv("DEBOX_APITOKEN"))
 	bot, err := boxbotapi.NewBotAPI(TestToken)
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 
 	bot.Debug = true
@@ -139,20 +153,43 @@ func TestGetAndSend_Messages(t *testing.T) {
 
 	updates := bot.GetUpdatesChan(u)
 
-	// Optional: wait for updates and clear them if you don't want to handle
-	// a large backlog of old messages
-	time.Sleep(time.Millisecond * 500)
-	updates.Clear()
-
+	// Loop through each update.
 	for update := range updates {
-		if update.Message == nil {
-			continue
+		// Check if we've gotten a message update.
+		if update.Message != nil {
+			// Construct a new message from the given chat ID and containing
+			// the text that we received.
+			msg := boxbotapi.NewMessage(update.Message.Chat.ID, update.Message.Chat.Type, update.Message.Text)
+
+			// If the message was open, add a copy of our numeric keyboard.
+			switch update.Message.Text {
+			case "/menu":
+				msg.ReplyMarkup = numericKeyboard
+			case "help":
+				msg.Text = "I understand /sayhi and /status."
+			case "sayhi":
+				msg.Text = "Hi :)"
+			case "status":
+				msg.Text = "I'm ok."
+			}
+
+			// Send the message.
+			if _, err = bot.Send(msg); err != nil {
+				panic(err)
+			}
+		} else if update.CallbackQuery != nil {
+			// Respond to the callback query, telling DeBox to show the user
+			// a message with the data received.
+			callback := boxbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
+			if _, err := bot.Request(callback); err != nil {
+				panic(err)
+			}
+
+			// And finally, send a message containing the data received.
+			msg := boxbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.Chat.Type, update.CallbackQuery.Data)
+			if _, err := bot.Send(msg); err != nil {
+				panic(err)
+			}
 		}
-
-		log.Printf("[%s] %s", update.Message.From.Name, update.Message.Text)
-
-		msg := boxbotapi.NewMessage(update.Message.Chat.ID, update.Message.Chat.Type, update.Message.Text)
-
-		bot.Send(msg)
 	}
 }
