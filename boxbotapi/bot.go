@@ -29,8 +29,7 @@ type BotAPI struct {
 	Self            User       `json:"-"`
 	Client          HTTPClient `json:"-"`
 	shutdownChannel chan interface{}
-
-	apiEndpoint string
+	apiEndpoint     string
 }
 
 // NewBotAPI creates a new BotAPI instance.
@@ -111,6 +110,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params Params) (*APIResponse, er
 		return &APIResponse{}, err
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("X-API-KEY", bot.Token)
 
 	resp, err := bot.Client.Do(req)
 	if err != nil {
