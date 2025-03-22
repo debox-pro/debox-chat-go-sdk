@@ -1,150 +1,82 @@
-## User Guide （中文）
+# debox-chat-go-sdk
 
-[README in English](https://github.com/debox-pro/debox-chat-go-sdk/blob/master/README_EN.md)
+`debox-chat-go-sdk` is the official Golang SDK for the DeBox Chat Service.
 
-### 基本介绍
+[Chinese version](./README_CN.md) 
 
-本项目是 Debox 社交聊天服务（Chat Service）API 的 Golang 编程接口，Chat Service Rest API 的封装和实现，帮助 Golang 开发人员更快编程使用 Debox 的聊天消息服务。
+## Introduction
 
-详细 API 接口以及含义请参考：https://help.debox.pro/openapi_cn/a/api_method
+`debox-chat-go-sdk` encapsulates the message sending and receiving functionalities of the DeBox social platform, helping developers efficiently build DeBox command bots, share DeBox ecosystem traffic dividends, and achieve dual value enhancement of technology and business.
 
-### 安装
+## Key Features
 
-```
-go get -u github.com/debox-pro/debox-chat-go-sdk
-```
+- ✅ ​**Send Messages**: Supports multiple message formats including text, Markdown, HTML, rich text, and button menus.  
+- ✅ ​**Receive Messages**: Monitor user messages and group chat information in real-time, and respond automatically.  
+- ✅ ​**Handle Commands**: Interact flexibly with users through custom commands.  
+- ✅ ​**Webhook Extensions**: Receive Webhook events to enable more complex functionality integration.  
 
-### 快速入门
+## Documentation
 
-**前言:** 所有的使用样例都位于[example](https://github.com/debox-pro/debox-chat-go-sdk/tree/master/example)目录下。
+For full documentation, please refer to the [DeBox Bot Go SDK Documentation](https://docs.debox.pro/GO-SDK/).
 
-1. **注册回调地址**
+## Try out the SDK
 
-   参考[register_url_sample.go](example/register_url.go)
+1. Install the SDK:
+   
+    ```sh
+    go get -u github.com/debox-pro/debox-chat-go-sdk
+    ```
+2. Get your API_KEY:
+   
+   You can obtain the Bot's API_KEY from [DeBox Open Platform](https://developer.debox.pro/). Refer to [DeBox Command Bot Development Guide](https://docs.debox.pro/APIs/BotGuide/) for more details.
+3. Send your first message:
+    ```go
+    package main
 
-   ```go
-   package main
+    import "github.com/debox-pro/debox-chat-go-sdk/boxbotapi"
 
-   import (
-       "fmt"
-       dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
-   )
+    func main() {
+        // Initialize the bot with your API key
+        bot, _ := boxbotapi.NewBotAPI("YOUR_BOT_API_KEY")
+        
+        // Create a new message
+        msg := boxbotapi.NewMessage("DEBOX_USER_ID", "private", "Hello, DeBox!")
+        
+        // Send the message
+        bot.Send(msg)
+    }
+    ``` 
+4. **For more examples, refer to the [./example/](./example/) directory.**
 
-   func main() {
+## SDK Structure
 
-       registerUrl := "www.xxx.pro/get_message"
-       xApiKey := "xxxxxx"
+This library is generally broken into three components you need to understand:
 
-       client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
+### Configs
 
-       _, err := client.RegisterCallbakUrl(registerUrl, "POST", "register")
+Configs are collections of fields related to a single request. For example, if one wanted to use the `sendMessage` endpoint, you could use the `MessageConfig` struct to configure the request. There is a one-to-one relationship between DeBox endpoints and configs. They generally have the naming pattern of the `send` prefix and they all end with the `Config` suffix.
 
-       if err != nil {
-           fmt.Println("register callback url  fail:", err)
-           return
-       }
+### Helpers
 
-       fmt.Println("register callback url success.")
+Helpers are easier ways of constructing common Configs. Instead of having to create a `MessageConfig` struct and remember to set the `ChatID` and `Text`, you can use the `NewMessage` helper method. It takes the two required parameters for the request to succeed. You can then set fields on the resulting `MessageConfig` after its creation. They are generally named the same as method names except with `send` replaced with `New`.
 
-   }
-   ```
 
-2. **发送会话消息**
+### Methods
 
-   参考 [send_chat_msg_sample.go](example/send_chat_msg.go)
+Methods are used to send Configs after they are constructed. Generally, `Request` is the lowest level method you'll have to call. It accepts a `Chattable` parameter and knows how to upload files if needed. It returns an `APIResponse`, the most general return type from the Bot API. This method is called for any endpoint that doesn't have a more specific return type. Almost every other method returns a `Message`, which you can use `Send` to obtain.
 
-   ```go
-   package main
+There's lower level methods such as `MakeRequest` which require an endpoint and parameters instead of accepting configs. These are primarily used internally. If you find yourself having to use them, please open an issue.
 
-   import (
-       "fmt"
-       dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
-   )
+## Getting Help
 
-   func main() {
+For general DeBox API questions (not specific to the Go SDK), check out the [DeBox OpenPlatform support group](https://m.debox.pro/group?id=cc0onr82).
 
-       xApiKey := "xxxxxx"
-       client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
+For questions specific to the Go SDK, create a new issue and tag it with a `question` label.
 
-       toUserId := ""
-       groupId := ""
-       message := ""
-       _, err := client.SendChatMsg(toUserId, groupId, message, "send_msg")
+## Contributing
 
-       if err != nil {
-           fmt.Println("send chat message fail:", err)
-           return
-       }
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for more information on contributing to the SDK.
 
-       fmt.Println("send chat message success.")
+## License
 
-   }
-   ```
-
-3. **发送机器人消息**
-
-   参考 [send_robot_msg_sample.go](example/send_robot_msg.go)
-
-   ```go
-   package main
-
-   import (
-       "fmt"
-       dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
-   )
-
-   func main() {
-
-       xApiKey := "xxxxxx"
-       client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
-
-       toUserId := ""
-       fromUserId := ""
-       objectName := ""
-       message := ""
-       _, err := client.SendRobotMsg(toUserId, message, objectName, "send_robot_msg")
-
-       if err != nil {
-           fmt.Println("send chat message fail:", err)
-           return
-       }
-
-       fmt.Println("send chat message success.")
-
-   }
-   ```
-
-4. **发送机器人群组消息**
-
-   参考 [send_robot_group_msg_sample.go](example/send_robot_group_msg.go)
-
-   ```go
-   package main
-
-   import (
-       "fmt"
-       dbx_chat "github.com/debox-pro/debox-chat-go-sdk"
-   )
-
-   func main() {
-
-        xApiKey := ""
-       client := dbx_chat.CreateNormalInterface("https://open.debox.pro", xApiKey)
-
-       toUserId := ""
-       groupId := ""
-       title := ""
-       content := ""
-       objectName := ""
-       message := ""
-       _, err := client.SendRobotGroupMsg(toUserId, groupId, title, content, message, objectName, "send_robot_group_msg")
-
-       if err != nil {
-   	    fmt.Println("send chat message fail:", err)
-   	return
-       }
-
-       fmt.Println("send chat message success.")
-
-   }
-   ```
+The contents of this repository are licensed under the [LICENSE](./LICENSE).
