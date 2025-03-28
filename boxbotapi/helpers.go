@@ -19,6 +19,31 @@ func NewMessageResponse(message *Message) MessageConfig {
 	}
 }
 
+// NewEditMessageText allows you to edit the text of a message.
+func NewEditMessageText(chatID, chatType string, messageID string, text string) EditMessageTextConfig {
+	return EditMessageTextConfig{
+		BaseEdit: BaseEdit{
+			ChatID:    chatID,
+			ChatType:  chatType,
+			MessageID: messageID,
+		},
+		Text: text,
+	}
+}
+
+// NewEditMessageTextAndMarkup allows you to edit the text and replymarkup of a message.
+func NewEditMessageTextAndMarkup(chatID, chatType string, messageID string, text string, replyMarkup InlineKeyboardMarkup) EditMessageTextConfig {
+	return EditMessageTextConfig{
+		BaseEdit: BaseEdit{
+			ChatID:      chatID,
+			ChatType:    chatType,
+			MessageID:   messageID,
+			ReplyMarkup: &replyMarkup,
+		},
+		Text: text,
+	}
+}
+
 // NewMessageToChannel creates a new Message that is sent to a channel
 // by username.
 //

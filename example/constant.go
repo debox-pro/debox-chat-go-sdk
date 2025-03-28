@@ -4,7 +4,8 @@ import boxbotapi "github.com/debox-pro/debox-chat-go-sdk/boxbotapi"
 
 var (
 	// Menu texts
-	firstMenu = "<b>Menu 1</b><br/>A box button message."
+	firstMenu  = "<b>Menu 1</b><br/>A box button message."
+	secondMenu = "<b>Menu 2</b>  A box button message."
 
 	// Button texts
 	nextButton     = "Next"
@@ -34,6 +35,7 @@ var (
 		boxbotapi.NewInlineKeyboardRow(
 			boxbotapi.NewInlineKeyboardButtonDataWithColor("BTC", "", tokenUrl, "61", "#ff0000"),
 			boxbotapi.NewInlineKeyboardButtonDataWithColor("BNB", "", tokenUrl, "27.5%", "#00ff00"),
+			boxbotapi.NewInlineKeyboardButtonData(backButton, backButton),
 		),
 	)
 	//you can set font size and font color as follows

@@ -13,7 +13,7 @@ import (
 func main() {
 	var err error
 	// bot, err = boxbotapi.NewBotAPI("<YOUR_BOT_TOKEN_HERE>")//replace with your token
-	bot, err = boxbotapi.NewBotAPI("oPM1uUmE6mIitDC8")
+	bot, err = boxbotapi.NewBotAPI("pPpHtOTtXsE6i5u6")
 	if err != nil {
 		// Abort if something is wrong
 		log.Panic(err)
@@ -113,7 +113,26 @@ func handleCommand(chatId, chatType string, command string) error {
 }
 
 func handleButton(query *boxbotapi.CallbackQuery) {
-	//暂时不支持消息编辑
+	var text string
+
+	markup := boxbotapi.NewInlineKeyboardMarkup()
+	message := query.Message
+
+	if query.Data == nextButton {
+		text = secondMenu
+		markup = secondMenuMarkup
+	} else if query.Data == backButton {
+		text = firstMenu
+		markup = firstMenuMarkup
+	}
+
+	// callbackCfg := boxbotapi.NewCallback(query.ID, "")
+	// bot.Send(callbackCfg)
+
+	// Replace menu text and keyboard
+	msg := boxbotapi.NewEditMessageTextAndMarkup(message.Chat.ID, message.Chat.Type, message.MessageID, text, markup)
+	msg.ParseMode = boxbotapi.ModeHTML
+	bot.Send(msg)
 }
 
 func sendMenu(chatId, chatType string) error {

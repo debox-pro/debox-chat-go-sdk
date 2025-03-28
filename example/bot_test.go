@@ -9,10 +9,10 @@ import (
 )
 
 var (
-	TestToken = "oPM1uUmE6mIitDC8" //replace with your token
-	ChatID    = "l3ixp32y"
-	// TestToken       = "pPpHtOTtXsE6i5u6" //replace with your token
-	// ChatID          = "ymor0jin"
+	// TestToken = "oPM1uUmE6mIitDC8" //replace with your token
+	// ChatID    = "l3ixp32y"
+	TestToken       = "pPpHtOTtXsE6i5u6" //replace with your token
+	ChatID          = "ymor0jin"
 	ChatType        = "group" //private,group
 	swapUrl         = "https://deswap.pro/?from_chain_id=1&from_address=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to_chain_id=1&to_address=0x32b77729cd87f1ef2bea4c650c16f89f08472c69&native=true"
 	numericKeyboard = boxbotapi.NewInlineKeyboardMarkup(

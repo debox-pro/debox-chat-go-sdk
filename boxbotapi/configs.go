@@ -77,8 +77,9 @@ func (chat *BaseChat) params() (Params, error) {
 // BaseEdit is base type of all chat edits.
 type BaseEdit struct {
 	ChatID          string
+	ChatType        string // required
 	ChannelUsername string
-	MessageID       int
+	MessageID       string
 	InlineMessageID string
 	ReplyMarkup     *InlineKeyboardMarkup
 }
@@ -90,7 +91,8 @@ func (edit BaseEdit) params() (Params, error) {
 		params["inline_message_id"] = edit.InlineMessageID
 	} else {
 		params.AddFirstValid("chat_id", edit.ChatID, edit.ChannelUsername)
-		params.AddNonZero("message_id", edit.MessageID)
+		params.AddFirstValid("chat_type", edit.ChatType, edit.ChannelUsername)
+		params.AddFirstValid("message_id", edit.MessageID)
 	}
 
 	err := params.AddInterface("reply_markup", edit.ReplyMarkup)
@@ -118,6 +120,29 @@ func (config MessageConfig) params() (Params, error) {
 
 func (config MessageConfig) method() string {
 	return "sendMessage"
+}
+
+// EditMessageTextConfig allows you to modify the text in a message.
+type EditMessageTextConfig struct {
+	BaseEdit
+	Text      string
+	ParseMode string
+}
+
+func (config EditMessageTextConfig) params() (Params, error) {
+	params, err := config.BaseEdit.params()
+	if err != nil {
+		return params, err
+	}
+
+	params["text"] = config.Text
+	params.AddNonEmpty("parse_mode", config.ParseMode)
+
+	return params, err
+}
+
+func (config EditMessageTextConfig) method() string {
+	return "editMessageText"
 }
 
 // UpdateConfig contains information about a GetUpdates request.

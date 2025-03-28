@@ -242,7 +242,7 @@ func (c Chat) IsChannel() bool {
 // Message represents a message.
 type Message struct {
 	// MessageID is a unique message identifier inside this chat
-	MessageID int `json:"message_id"`
+	MessageID string `json:"message_id"`
 	// Text is for text messages, the actual UTF-8 text of the message, 0-4096 characters;
 	//
 	// optional
