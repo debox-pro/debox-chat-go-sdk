@@ -3,27 +3,38 @@ package main
 import (
 	"encoding/json"
 	"log"
+	"strings"
 	"testing"
 
 	boxbotapi "github.com/debox-pro/debox-chat-go-sdk/boxbotapi"
 )
 
 var (
-	// TestToken = "oPM1uUmE6mIitDC8" //replace with your token
-	// ChatID    = "l3ixp32y"
-	TestToken       = "pPpHtOTtXsE6i5u6" //replace with your token
-	ChatID          = "ymor0jin"
-	ChatType        = "group" //private,group
-	swapUrl         = "https://deswap.pro/?from_chain_id=1&from_address=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to_chain_id=1&to_address=0x32b77729cd87f1ef2bea4c650c16f89f08472c69&native=true"
-	numericKeyboard = boxbotapi.NewInlineKeyboardMarkup(
+	TestToken = "oPM1uUmaYE6mIitDC8" //replace with your token
+	ChatID    = "l3ixp32y"
+	// TestToken    = "pPpHtOTtXsE6i5u6" //replace with your token
+	// ChatID       = "ymor0jin"
+	ChatType     = "group" //private,group
+	swapUrl      = "https://deswap.pro/?from_chain_id=1&from_address=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to_chain_id=1&to_address=0x32b77729cd87f1ef2bea4c650c16f89f08472c69&native=true"
+	NextKeyboard = boxbotapi.NewInlineKeyboardMarkup(
 		boxbotapi.NewInlineKeyboardRow(
 			boxbotapi.NewInlineKeyboardButtonURL("debox", "https://debox.pro"),
-			boxbotapi.NewInlineKeyboardButtonData("2", "2"),
-			boxbotapi.NewInlineKeyboardButtonData("3", "3"),
-		),
-		boxbotapi.NewInlineKeyboardRow(
 			boxbotapi.NewInlineKeyboardButtonDataWithColor("BOX", "", swapUrl, "15%", "#ff0000"),
 			boxbotapi.NewInlineKeyboardButtonDataWithColor("BTC", "", "https://debox.pro", "27.5%", "#00ff00"),
+		),
+		boxbotapi.NewInlineKeyboardRow(
+			boxbotapi.NewInlineKeyboardButtonData("next", "next"),
+		),
+	)
+
+	BackKeyboard = boxbotapi.NewInlineKeyboardMarkup(
+		boxbotapi.NewInlineKeyboardRow(
+			boxbotapi.NewInlineKeyboardButtonURL("debox", "https://debox.pro"),
+			boxbotapi.NewInlineKeyboardButtonDataWithColor("BOX", "", swapUrl, "15%", "#ff0000"),
+			boxbotapi.NewInlineKeyboardButtonDataWithColor("BTC", "", "https://debox.pro", "27.5%", "#00ff00"),
+		),
+		boxbotapi.NewInlineKeyboardRow(
+			boxbotapi.NewInlineKeyboardButtonData("back", "back"),
 		),
 	)
 )
@@ -163,8 +174,8 @@ func TestGetAndSend_Messages(t *testing.T) {
 
 			// If the message was open, add a copy of our numeric keyboard.
 			switch update.Message.Text {
-			case "/menu":
-				msg.ReplyMarkup = numericKeyboard
+			case "/next":
+				msg.ReplyMarkup = NextKeyboard
 			case "help":
 				msg.Text = "I understand /sayhi and /status."
 			case "sayhi":
@@ -178,18 +189,18 @@ func TestGetAndSend_Messages(t *testing.T) {
 				panic(err)
 			}
 		} else if update.CallbackQuery != nil {
-			// Respond to the callback query, telling DeBox to show the user
-			// a message with the data received.
-			callback := boxbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
-			if _, err := bot.Request(callback); err != nil {
-				panic(err)
+			var text = update.CallbackQuery.Message.Text
+			var replyMarkup *boxbotapi.InlineKeyboardMarkup = nil
+			if strings.Contains(text, "next") {
+				replyMarkup = &BackKeyboard
+				text = "<b>I am back</b>"
+			} else {
+				replyMarkup = &NextKeyboard
+				text = "<b>I am next</b>"
 			}
-
-			// And finally, send a message containing the data received.
-			msg := boxbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.Chat.Type, update.CallbackQuery.Data)
-			if _, err := bot.Send(msg); err != nil {
-				panic(err)
-			}
+			msg := boxbotapi.NewEditMessageTextAndMarkup(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Message.Chat.Type, update.CallbackQuery.Message.MessageID, text, *replyMarkup)
+			msg.ParseMode = boxbotapi.ModeHTML
+			bot.Send(msg)
 		}
 	}
 }

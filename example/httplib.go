@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+// HttpGet2Obj 从指定的URL获取数据，并将响应体反序列化为目标对象。
 func HttpGet2Obj(url string, header map[string]string, v any) error {
 	response, err := HttpGet(url, header)
 	if err != nil {
