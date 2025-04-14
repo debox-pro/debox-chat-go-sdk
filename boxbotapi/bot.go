@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 )
 
 // HTTPClient is the type needed for the bot to perform HTTP requests.
@@ -114,9 +113,18 @@ func (bot *BotAPI) MakeRequest(endpoint string, params Params) (*APIResponse, er
 
 	resp, err := bot.Client.Do(req)
 	if err != nil {
+		log.Printf("Endpoint: %s, params: %v,statuscode : %d\n", endpoint, params, resp.StatusCode)
 		return nil, err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		log.Printf("Endpoint: %s, params: %v,statuscode : %d\n", endpoint, params, resp.StatusCode)
+		return nil, Error{
+			Code:    resp.StatusCode,
+			Message: "429 too many requests",
+		}
+	}
 
 	var apiResp APIResponse
 	bytes, err := bot.decodeAPIResponse(resp.Body, &apiResp)
@@ -230,6 +238,7 @@ func (bot *BotAPI) GetUpdates(config UpdateConfig) ([]Update, error) {
 	}
 
 	var updates []Update
+	fmt.Println(string(resp.Result))
 	err = json.Unmarshal(resp.Result, &updates)
 	if err != nil {
 		fmt.Println("GetUpdates error: ", err)
@@ -252,9 +261,10 @@ func (bot *BotAPI) GetUpdatesChan(config UpdateConfig) UpdatesChannel {
 
 			updates, err := bot.GetUpdates(config)
 			if err != nil {
-				log.Println(err)
-				log.Println("Failed to get updates, retrying in 3 seconds...")
-				time.Sleep(time.Second * 3)
+				log.Println("GetUpdates error: ", err)
+				if strings.Contains(err.Error(), "429") {
+					// time.Sleep(time.Second * 500)
+				}
 
 				continue
 			}
