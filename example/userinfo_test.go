@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"testing"
 	"time"
+
+	boxbotapi "github.com/debox-pro/debox-chat-go-sdk/boxbotapi"
 )
 
 func getSignature(appSecret string) (nonce, timestamp, signature string) {
@@ -41,14 +43,14 @@ func TestUserInfot(t *testing.T) {
 
 	nonce, timestamp, signature := getSignature("app_secret")
 	var headers = map[string]string{
-		"X-API-KEY": TestToken,
+		"X-API-KEY": "<YOUR_API_KEY_HERE>",
 		"nonce":     nonce,
 		"timestamp": timestamp,
 		"signature": signature,
 	}
 
 	var resp = make(map[string]interface{})
-	err := HttpGet2Obj(url, headers, &resp)
+	err := boxbotapi.HttpGet2Obj(url, headers, &resp)
 	if err != nil {
 		fmt.Println("send chat message fail:", err)
 		return
