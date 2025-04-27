@@ -12,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 // HTTPClient is the type needed for the bot to perform HTTP requests.
@@ -67,7 +68,7 @@ func NewBotAPIWithClient(token, apiEndpoint string, client HTTPClient) (*BotAPI,
 
 	self, err := bot.GetMe()
 	if err != nil {
-		// return nil, err //bmadd -- need to open it
+		return nil, err
 	}
 
 	bot.Self = self
@@ -113,7 +114,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params Params) (*APIResponse, er
 
 	resp, err := bot.Client.Do(req)
 	if err != nil {
-		log.Printf("Endpoint: %s, params: %v,statuscode : %d\n", endpoint, params, resp.StatusCode)
+		log.Printf("bot.Client.Do(req) error,Endpoint: %s, params: %v\n", endpoint, params)
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -263,7 +264,9 @@ func (bot *BotAPI) GetUpdatesChan(config UpdateConfig) UpdatesChannel {
 			if err != nil {
 				log.Println("GetUpdates error: ", err)
 				if strings.Contains(err.Error(), "429") {
-					// time.Sleep(time.Second * 500)
+					time.Sleep(time.Second * 1)
+				} else {
+					time.Sleep(time.Second * 3)
 				}
 
 				continue
