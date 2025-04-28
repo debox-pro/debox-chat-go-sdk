@@ -94,13 +94,14 @@ var (
 
 func main() {
 	var err error
-	bot, err = boxbotapi.NewBotAPI("<YOUR_BOT_TOKEN_HERE>") //replace with your token
+	// bot, err = boxbotapi.NewBotAPI("<YOUR_BOT_TOKEN_HERE>") //replace with your token
+	bot, err = boxbotapi.NewBotAPI("oPM1uUmE6mIitDC8") //replace with your token
 	if err != nil {
 		// Abort if something is wrong
 		log.Panic(err)
 	}
 	// Set this to true to log all interactions with debox servers
-	bot.Debug = true
+	bot.Debug = false
 
 	u := boxbotapi.NewUpdate(0)
 	u.Timeout = 60
@@ -169,7 +170,7 @@ func handleMessage(message *boxbotapi.Message) {
 		msg := boxbotapi.NewMessage(message.Chat.ID, message.Chat.Type, message.Text)
 		msg.ParseMode = boxbotapi.ModeHTML
 
-		if sessionsInputTel[message.Chat.ID+user.UserId] {
+		if sessionsInputTel[message.Chat.ID+user.UserId] && strings.ToLower(text) != "botmother" {
 			var text = strings.TrimSpace(message.Text)
 			var telNoRegex = regexp.MustCompile(`[0-9]{11}`)
 			matches := telNoRegex.FindStringSubmatch(text)
