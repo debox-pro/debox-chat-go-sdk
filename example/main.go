@@ -1,112 +1,95 @@
 package main
 
 import (
-	"bufio"
 	"context"
-	"encoding/json"
+	"fmt"
 	"log"
 	"os"
+	"os/signal"
+	"regexp"
 	"strings"
+	"syscall"
+	"time"
 
 	boxbotapi "github.com/debox-pro/debox-chat-go-sdk/boxbotapi"
 )
 
-const (
-	// Bot token
-	ImageOne = "https://data.debox.pro/dao/newpic/one.png"
-	ImageTwo = "https://data.debox.pro/dao/newpic/two.png"
-	Href     = "https://app.debox.pro/"
-)
-
 var (
-	// Menu texts
-	firstMenu  = "<b>Menu 1</b><br/>A box button message."
-	secondMenu = "<b>Menu 2</b>  A box button message."
-
+	sessionsInputTel = map[string]bool{}
 	// Button texts
-	nextButton     = "Next"
-	backButton     = "Back"
-	tutorialButton = "Box"
-	tokenUrl       = "https://deswap.pro/?from_chain_id=1&from_address=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to_chain_id=1&to_address=0x32b77729cd87f1ef2bea4c650c16f89f08472c69&native=true"
+	homeInfoContent = `<body href="%s"><b>Bot首页</b> <br/> 我是Debox官方演示机器人，展示Bot部分能力，供开发者参考。<br/>
+					1、可以通过发送<b>botmother</b>消息直接唤醒我<br/>
+					2、可以点击<a href="%s">@botmother</a>进入私聊交互。<br/>
+					3、该Bot代码很少共218行，去掉注释后<font color="#0000ff">源码只有196行</font>，演示了以下功能：<br/>
+					• 消息监听<br/>
+					• 消息发送<br/>
+					• 消息编辑<br/>
+					• 按钮传参<br/>
+					• 静默授权<br/>
+					• 充话费业务交互等功能<br/>• 同时演示了用HTML构造原生消息的能力，极大丰富了富文本承载信息的能力。<br/>
+					4、您可以<a href="https://docs.debox.pro/zh/GO-SDK">下载源码</a>，基于源码开发自己的Bot服务。<br/>
+					基于SDK和此Demo，开发Bot的难度和成本很低，您可以轻松搭建自己的Bot服务。
+					<br/>点击下面按钮体验吧。</body>
+					`
+	homeButton         = "首页"
+	myButton           = "我是谁"
+	yourButton         = "你是谁"
+	chargeButton       = "充话费"
+	confirmChareButton = "确认充值"
+	boxTokenUrl        = "https://deswap.pro/?from_chain_id=1&from_address=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to_chain_id=1&to_address=0x32b77729cd87f1ef2bea4c650c16f89f08472c69&native=true"
+	privateChatUrl     = "https://m.debox.pro/user/chat?id="
+	userHomePage       = "https://m.debox.pro/card?id="
 
-	// Store bot screaming status
 	bot *boxbotapi.BotAPI
-
-	// Keyboard layout for the first menu. One button, one row
-	firstMenuMarkup = boxbotapi.NewInlineKeyboardMarkup(
+	// Keyboard layout for the second menu. Two buttons, one per row
+	homeMenuMarkup = boxbotapi.NewInlineKeyboardMarkup(
 		boxbotapi.NewInlineKeyboardRow(
-			boxbotapi.NewInlineKeyboardButtonURL("url1", tokenUrl),
+			// boxbotapi.NewInlineKeyboardButtonData(yourButton, yourButton),
+			boxbotapi.NewInlineKeyboardButtonDataWithColor("", yourButton, "", yourButton, "#21C161"),
+			boxbotapi.NewInlineKeyboardButtonDataWithColor("", myButton, "", myButton, "#21C161"),
+			boxbotapi.NewInlineKeyboardButtonDataWithColor("", chargeButton, "", chargeButton, "#21C161"),
 		),
 		boxbotapi.NewInlineKeyboardRow(
-			boxbotapi.NewInlineKeyboardButtonData(nextButton, nextButton),
-			boxbotapi.NewInlineKeyboardButtonData(backButton, backButton),
+			boxbotapi.NewInlineKeyboardButtonData(homeButton, homeButton),
 		),
 	)
 
-	// Keyboard layout for the second menu. Two buttons, one per row
-	secondMenuMarkup = boxbotapi.NewInlineKeyboardMarkup(
+	chareMenuMarkup = boxbotapi.NewInlineKeyboardMarkup(
 		boxbotapi.NewInlineKeyboardRow(
-			boxbotapi.NewInlineKeyboardButtonURL(tutorialButton, tokenUrl),
-		),
-		boxbotapi.NewInlineKeyboardRow(
-			boxbotapi.NewInlineKeyboardButtonDataWithColor("BTC", "", tokenUrl, "61", "#ff0000"),
-			boxbotapi.NewInlineKeyboardButtonDataWithColor("BNB", "", tokenUrl, "27.5%", "#00ff00"),
-			boxbotapi.NewInlineKeyboardButtonData(backButton, backButton),
+			boxbotapi.NewInlineKeyboardButtonURL(confirmChareButton, boxTokenUrl),
+			boxbotapi.NewInlineKeyboardButtonData(homeButton, homeButton),
 		),
 	)
 	//you can set font size and font color as follows
 	// secondMenuMarkup.FontSize = "s"
 	// secondMenuMarkup.FontColor = "#0000ff"
-	// firstMenuMarkup.FontSize = "s"
-	// firstMenuMarkup.FontColor = "#ff0000"
-
-	validHTMLFormat = `
-	<span style="color:red">span123</span>
-	<b>bold</b>,nobold <strong>bold</strong>
-	<i>italic</i>, <em>italic</em>
-	<u>underline</u>, <ins>underline</ins>
-	<s>strikethrough</s>, <strike>strikethrough</strike>, <del>strikethrough</del>
-	<span style="">spoiler</span>,
-	<b>bold <i>italic bold <s>italic bold strikethrough <span>italic bold strikethrough spoiler</span></s> <u>underline italic bold</u></i> bold</b>
-	<a href="http://www.example.com/">inline URL</a>
-	<a href="box://user?id=123456789">inline mention of a user</a>
-	<a href="https://debox.pro">debox</a>
-	<code>inline fixed-width code</code>
-	<pre>pre-formatted fixed-width code block</pre>
-	<pre><code class="language-python">pre-formatted fixed-width code block written in the Python programming language</code></pre>
-	<blockquote>Block quotation started\nBlock quotation continued\nThe last line of the block quotation</blockquote>
-	<blockquote expandable>Expandable block quotation started\nExpandable block quotation continued\nExpandable block quotation continued\nHidden by default part of the block quotation started\nExpandable block quotation continued\nThe last line of the block quotation</blockquote>
-	`
-	validMarkdownFormat = "*粗斜体*,\n" +
-		"**粗斜体**,\n" +
-		"~~strikethrough~~\n" +
-		"# 一级标题。\n" +
-		"[debox](https://debox.pro/)\n" +
-		"## 22222222BTC\n" +
-		"### 3333333BTC\n" +
-		"#### 44444BTC\n" +
-		"##### 55555555BTC\n" +
-		"###### 6666666BTC\n" +
-		"####### 7777777$BOX"
-	contentNormal = "$box"
-
-	htmlSample = `
-	<body style="background-color1: #ff0000;" href="https://deswap.pro/?from_chain_id=56&from_address=0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE&to_chain_id=888888&to_address=vBOX">
-	
-	<div style="background-color:#00ff00;width:80%;color:#0000ff">
-		<img src="https://data.debox.pro/dao/newpic/one.png" style="width:50;height:50;vertical-align:middle;border-radius: 50%;radius:-1"/>张三丰
+	cardSample = `
+	<body href="%s">
+		<div style="background-color1:#00ff00;width:80%%;color:#8a8a8a">
+			<img src="%s" style="width:10%%;height:10%%;vertical-align:middle;border-radius: 50%%;radius:-1"/>%s
 		</div>
-		<span style="color1:#00ff00"><b>快来一起参与吧</b> <a href="https://debox.pro">Go!</a></span>
-		<br/>
-		<img src="https://data.debox.pro/dao/newpic/one.png" style="width:100%;height:100%;"/>
-		<hr/>
-		<div style="width:70%">
-		<img src="https://data.debox.pro/dao/newpic/one.png" style="width:20;height:20;vertical-align:middle;border-radius: 50%;radius:-1"/>
-		https://debox.pro
-	</div>
-	
-  	</body>
-    `
+			<b>Address: </b>%s
+			<br/>
+			<img src="%s" style="width:100%%;height:100%%;"/>
+		<div style="width:70%%">
+			<font style="font-size:12px;color:#8a8a8a">🏠</font>
+			<font style="font-size:12px;color:#8a8a8a">%s</font>
+		</div>
+	</body>
+	`
+	confirmCharge = `
+	<body href1="">
+			<b>请确认充值信息</b><br/>
+			<div style="background-color1:#00ff00;width:80%%;color:#8a8a8a">
+			<img src="%s" style="width:10%%;height:10%%;vertical-align:middle;border-radius: 50%%;radius:-1"/>%s
+			</div>
+			<b>Name: </b>%s<br/>
+			<b>UserId: </b>%s<br/>
+			<b>Address: </b>%s<br/>
+			<b>TelNo.: </b><font color="#0000ff">%s</font><br/>
+			<b>Assert: </b>200Box<br/>
+	</body>
+	`
 )
 
 func main() {
@@ -125,22 +108,27 @@ func main() {
 	// Create a new cancellable background context. Calling `cancel()` leads to the cancellation of the context
 	ctx := context.Background()
 	ctx, cancel := context.WithCancel(ctx)
-
 	// `updates` is a golang channel which receives debox updates
 	updates := bot.GetUpdatesChan(u)
-
 	// Pass cancellable context to goroutine
 	go receiveUpdates(ctx, updates)
-
 	// Tell the user the bot is online
 	log.Println("Start listening for updates. Press enter to stop")
-
-	// Wait for a newline symbol, then cancel handling updates
-	bufio.NewReader(os.Stdin).ReadBytes('\n')
+	//new stop
+	// 创建一个信号通道，用于接收系统信号
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	// 等待信号
+	<-sigs
+	// 接收到信号后，取消上下文
 	cancel()
-
+	// 等待一段时间，让 goroutine 有时间优雅退出
+	select {
+	case <-ctx.Done():
+	case <-time.After(2 * time.Second):
+	}
+	log.Println("Bot stopped.")
 }
-
 func receiveUpdates(ctx context.Context, updates boxbotapi.UpdatesChannel) {
 	// `for {` means the loop is infinite until we manually stop it
 	for {
@@ -154,7 +142,6 @@ func receiveUpdates(ctx context.Context, updates boxbotapi.UpdatesChannel) {
 		}
 	}
 }
-
 func handleUpdate(update boxbotapi.Update) {
 	switch {
 	// Handle messages
@@ -168,7 +155,6 @@ func handleUpdate(update boxbotapi.Update) {
 		break
 	}
 }
-
 func handleMessage(message *boxbotapi.Message) {
 	user := message.From
 	text := message.Text
@@ -176,146 +162,79 @@ func handleMessage(message *boxbotapi.Message) {
 	if user == nil {
 		return
 	}
-
 	// Print to console
 	log.Printf("%s wrote %s", user.Name, text)
-
 	var err error
-	if strings.HasPrefix(text, "/") {
-		err = handleCommand(message.Chat.ID, message.Chat.Type, text)
-	} else if len(text) > 0 {
-		msg := boxbotapi.NewMessageResponse(message)
-		_, err = bot.Send(msg)
-	}
+	if len(text) > 0 {
+		msg := boxbotapi.NewMessage(message.Chat.ID, message.Chat.Type, message.Text)
+		msg.ParseMode = boxbotapi.ModeHTML
 
+		if sessionsInputTel[message.Chat.ID+user.UserId] {
+			var text = strings.TrimSpace(message.Text)
+			var telNoRegex = regexp.MustCompile(`[0-9]{11}`)
+			matches := telNoRegex.FindStringSubmatch(text)
+			if len(text) != 11 || len(matches) == 0 {
+				msg.Text = "手机号码格式有误，请输入11位数字的手机号"
+			} else {
+				msg.Text = fmt.Sprintf(confirmCharge, user.Pic, user.Name, user.Name, user.UserId, user.Address, text)
+				msg.ReplyMarkup = chareMenuMarkup
+			}
+			_, err = bot.Send(msg)
+		} else {
+			if strings.Contains(strings.ToLower(text), "botmother") {
+				msg.Text = fmt.Sprintf(homeInfoContent, privateChatUrl+bot.Self.UserId)
+				setSelected(homeMenuMarkup, 0, 100)
+				msg.ReplyMarkup = homeMenuMarkup
+				delete(sessionsInputTel, message.Chat.ID+user.UserId)
+				_, err = bot.Send(msg)
+			}
+		}
+	}
 	if err != nil {
 		log.Printf("An error occured: %s", err.Error())
 	}
 }
-
-// When we get a command, we react accordingly
-func handleCommand(chatId, chatType string, command string) error {
-	var err error
-
-	switch command {
-	case "/menu":
-		err = sendMenu(chatId, chatType)
-		break
-
-	case "/menu2":
-		err = sendMenu2(chatId, chatType)
-		break
-	case "/html", "/html1":
-		err = sendHTMLMessage(chatId, chatType)
-		break
+func setSelected(keyboard boxbotapi.InlineKeyboardMarkup, row, col int) {
+	for i := 0; i < len(keyboard.InlineKeyboard[row]); i++ {
+		keyboard.InlineKeyboard[row][i].SubTextColor = "#21C161"
+		if col == i {
+			keyboard.InlineKeyboard[row][i].SubTextColor = "#ff0000"
+		}
 	}
-
-	return err
 }
-
 func handleButton(query *boxbotapi.CallbackQuery) {
 	var text string
+	message := query.Message
+	delete(sessionsInputTel, message.Chat.ID+query.From.UserId)
 
 	markup := boxbotapi.NewInlineKeyboardMarkup()
-	message := query.Message
 
-	if query.Data == nextButton {
-		text = secondMenu
-		markup = secondMenuMarkup
-	} else if query.Data == backButton {
-		text = firstMenu
-		markup = firstMenuMarkup
+	if query.Data == homeButton {
+		var user = bot.Self
+		var homePage = userHomePage + user.UserId
+		text = fmt.Sprintf(homeInfoContent, homePage, privateChatUrl+user.UserId)
+		setSelected(homeMenuMarkup, 0, 100)
+		markup = homeMenuMarkup
+	} else if query.Data == yourButton {
+		var user = bot.Self
+		var homePage = userHomePage + user.UserId
+		text = fmt.Sprintf(cardSample, homePage, user.Pic, user.Name, user.Address, user.Pic, homePage)
+		markup = homeMenuMarkup
+		setSelected(homeMenuMarkup, 0, 0)
+	} else if query.Data == myButton {
+		var user = query.From
+		var homePage = userHomePage + user.UserId
+		text = fmt.Sprintf(cardSample, homePage, user.Pic, user.Name, user.Address, user.Pic, homePage)
+		markup = homeMenuMarkup
+		setSelected(homeMenuMarkup, 0, 1)
+	} else if query.Data == chargeButton {
+		text = `<b>输入手机号码</b><br/>请在编辑框中输入，然后发送给我。`
+		markup = homeMenuMarkup
+		sessionsInputTel[message.Chat.ID+query.From.UserId] = true
+		setSelected(homeMenuMarkup, 0, 2)
 	}
-
 	// Replace menu text and keyboard
 	msg := boxbotapi.NewEditMessageTextAndMarkup(message.Chat.ID, message.Chat.Type, message.MessageID, text, markup)
 	msg.ParseMode = boxbotapi.ModeHTML
 	bot.Send(msg)
-}
-
-func sendMenu(chatId, chatType string) error {
-	msg := boxbotapi.NewMessage(chatId, chatType, firstMenu)
-	msg.ParseMode = boxbotapi.ModeHTML
-	msg.ReplyMarkup = firstMenuMarkup
-	_, err := bot.Send(msg)
-	return err
-}
-
-func sendMenu2(chatId, chatType string) error {
-	msg := boxbotapi.NewMessage(chatId, chatType, firstMenu)
-	msg.ParseMode = boxbotapi.ModeHTML
-	msg.ReplyMarkup = secondMenuMarkup
-	_, err := bot.Send(msg)
-	return err
-}
-
-func SendMarkdownMessage(chatId, chatType string) error {
-	msg := boxbotapi.NewMessage(chatId, chatType, "#title,\nA test message from the test library in debox-bot-api")
-	msg.ParseMode = boxbotapi.ModeMarkdownV2
-	_, err := bot.Send(msg)
-
-	if err != nil {
-		log.Printf("SendMarkdownMessage error:%v\n", err)
-	}
-	return err
-}
-func sendHTMLMessage(chatId, chatType string) error {
-	msg := boxbotapi.NewMessage(chatId, chatType, "A test <b>html</b> <font color=\"red\">message</font><br/><a href=\"https://debox.pro\">debox</a>")
-	msg.ParseMode = boxbotapi.ModeHTML
-	_, err := bot.Send(msg)
-
-	if err != nil {
-		log.Printf("SendHTMLMessage error:%v\n", err)
-	}
-	return err
-}
-func sendRichText(chatId, chatType string) error {
-	var imageOne = "https://data.debox.pro/dao/newpic/one.png"
-	var imageTwo = "https://data.debox.pro/dao/newpic/two.png"
-	var href = "https://app.debox.pro/"
-	var uiImgHead = boxbotapi.UITagImg{
-		Uitag:    "img",
-		Src:      imageOne,
-		Position: "head",
-		Href:     href,
-		Height:   "200",
-	}
-	jsonUIImgHead, _ := json.Marshal(uiImgHead)
-
-	var uiImgFoot = boxbotapi.UITagImg{
-		Uitag:    "img",
-		Src:      imageTwo,
-		Position: "foot",
-		Href:     href,
-		Height:   "300",
-	}
-	uiImgFootJson, _ := json.Marshal(uiImgFoot)
-
-	var uiA = boxbotapi.UITagA{
-		Uitag: "a",
-		Text:  "DeBox",
-		Href:  href,
-	}
-	uiAJson, _ := json.Marshal(uiA)
-	content := "richtext https://debox.pro " + string(jsonUIImgHead) + string(uiImgFootJson) + string(uiAJson)
-	//发送
-
-	msg := boxbotapi.NewMessage(chatId, chatType, content)
-	// msg.ParseMode = boxbotapi.ModeRichText
-	_, err := bot.Send(msg)
-
-	if err != nil {
-		log.Printf("SendRichText error:%v\n", err)
-
-	}
-	return err
-}
-
-func sendHtml(chatId, chatType string) error {
-	var html = htmlSample
-	msg := boxbotapi.NewMessage(chatId, chatType, html)
-	msg.ParseMode = boxbotapi.ModeHTML
-	msg.ReplyMarkup = secondMenuMarkup
-	_, err := bot.Send(msg)
-	return err
 }
