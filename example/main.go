@@ -170,19 +170,23 @@ func handleMessage(message *boxbotapi.Message) {
 		msg := boxbotapi.NewMessage(message.Chat.ID, message.Chat.Type, message.Text)
 		msg.ParseMode = boxbotapi.ModeHTML
 
-		if sessionsInputTel[message.Chat.ID+user.UserId] && strings.ToLower(text) != "botmother" {
+		if sessionsInputTel[message.Chat.ID+user.UserId] {
 			var text = strings.TrimSpace(message.Text)
+			if strings.Contains(strings.ToLower(text), "stop") {
+				delete(sessionsInputTel, message.Chat.ID+user.UserId)
+				return
+			}
 			var telNoRegex = regexp.MustCompile(`[0-9]{11}`)
 			matches := telNoRegex.FindStringSubmatch(text)
 			if len(text) != 11 || len(matches) == 0 {
-				msg.Text = "手机号码格式有误，请输入11位数字的手机号"
+				msg.Text = "您好," + user.Name + `,手机号码格式有误，请输入<font color="#0000ff">11位数字</font>的手机号，或者输入<font color="#0000ff">stop</font>结束充值操作`
 			} else {
 				msg.Text = fmt.Sprintf(confirmCharge, user.Pic, user.Name, user.Name, user.UserId, user.Address, text)
 				msg.ReplyMarkup = chareMenuMarkup
 			}
 			_, err = bot.Send(msg)
 		} else {
-			if strings.Contains(strings.ToLower(text), "botmother") {
+			if strings.ToLower(text) == "botmother" || message.Chat.Type == "private" {
 				msg.Text = fmt.Sprintf(homeInfoContent, privateChatUrl+bot.Self.UserId)
 				setSelected(homeMenuMarkup, 0, 100)
 				msg.ReplyMarkup = homeMenuMarkup
