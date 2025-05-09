@@ -239,7 +239,9 @@ func (bot *BotAPI) GetUpdates(config UpdateConfig) ([]Update, error) {
 	}
 
 	var updates []Update
-	fmt.Println(string(resp.Result))
+	if bot.Debug {
+		fmt.Println(string(resp.Result))
+	}
 	err = json.Unmarshal(resp.Result, &updates)
 	if err != nil {
 		fmt.Println("GetUpdates error: ", err)
