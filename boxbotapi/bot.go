@@ -32,6 +32,17 @@ type BotAPI struct {
 	apiEndpoint     string
 }
 
+// SetHost modify the main host.
+// host is the host you want to use.
+// like: "https://open.debox.pro", without '/' at the end.
+func SetHost(host string) {
+	if len(host) > 0 {
+		APIEndpoint = fmt.Sprintf("%s/openapi/bot%%s/%%s", host)
+	} else {
+		log.Printf("SetHost error,host is empty,use the default host now")
+	}
+}
+
 // NewBotAPI creates a new BotAPI instance.
 //
 // It requires a token, provided by @BotFather on DeBox.

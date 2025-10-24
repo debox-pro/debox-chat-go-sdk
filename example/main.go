@@ -95,7 +95,8 @@ var (
 func main() {
 	var err error
 	// bot, err = boxbotapi.NewBotAPI("<YOUR_BOT_TOKEN_HERE>") //replace with your token
-	bot, err = boxbotapi.NewBotAPI("oPM1uUmE6mIitDC8") //replace with your token
+	// boxbotapi.SetHost("") //you can chage host here
+	bot, err = boxbotapi.NewBotAPI("oPM1uU*****DC8") //replace with your token
 	if err != nil {
 		// Abort if something is wrong
 		log.Panic(err)

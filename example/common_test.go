@@ -36,7 +36,7 @@ func getSignature(appSecret string) (nonce, timestamp, signature string) {
 //message 发送的消息，required
 //send_msg  只能发文字，可以随便填写，required
 
-func TestUserInfot(t *testing.T) {
+func TestUserInfo(t *testing.T) {
 
 	//url
 	url := "https://open.debox.pro/openapi/user/info?user_id=uvg2p6ho"
@@ -61,5 +61,11 @@ func TestUserInfot(t *testing.T) {
 		return
 	}
 	fmt.Println("UserInfot_Test success." + string(strRes))
+
+}
+
+func TestSetHost(t *testing.T) {
+	//url
+	boxbotapi.SetHost("https://open.debox.pro")
 
 }

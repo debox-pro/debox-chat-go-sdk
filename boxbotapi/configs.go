@@ -1,7 +1,7 @@
 package boxbotapi
 
 // DeBox constants
-const (
+var (
 	APIEndpoint = "https://open.debox.pro/openapi/bot%s/%s"
 )
 
