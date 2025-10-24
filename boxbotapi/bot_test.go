@@ -51,7 +51,7 @@ func (t testLogger) Printf(format string, v ...interface{}) {
 
 func getBot(t *testing.T) (*BotAPI, error) {
 	bot, err := NewBotAPI(TestToken)
-	bot.Debug = true
+	Debug = true
 
 	logger := testLogger{t}
 	SetLogger(logger)
@@ -153,7 +153,7 @@ func TestGetAndSend_Messages(t *testing.T) {
 		log.Panic(err)
 	}
 
-	bot.Debug = true
+	Debug = true
 
 	log.Printf("Authorized on account %s", bot.Self.Name)
 

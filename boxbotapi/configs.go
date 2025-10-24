@@ -3,6 +3,7 @@ package boxbotapi
 // DeBox constants
 var (
 	APIEndpoint = "https://open.debox.pro/openapi/bot%s/%s"
+	Debug       = false
 )
 
 // Constant values for ChatActions

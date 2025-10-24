@@ -108,7 +108,7 @@ func buildParams(in Params) url.Values {
 
 // MakeRequest makes a request to a specific endpoint with our token.
 func (bot *BotAPI) MakeRequest(endpoint string, params Params) (*APIResponse, error) {
-	if bot.Debug {
+	if Debug {
 		log.Printf("Endpoint: %s, params: %v\n", endpoint, params)
 	}
 
@@ -144,7 +144,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params Params) (*APIResponse, er
 		return &apiResp, err
 	}
 
-	if bot.Debug {
+	if Debug {
 		log.Printf("Endpoint: %s, response: %s\n", endpoint, string(bytes))
 	}
 
@@ -169,7 +169,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params Params) (*APIResponse, er
 // If debug disabled, just decode http.Response.Body stream to APIResponse struct
 // for efficient memory usage
 func (bot *BotAPI) decodeAPIResponse(responseBody io.Reader, resp *APIResponse) ([]byte, error) {
-	if !bot.Debug {
+	if !Debug {
 		dec := json.NewDecoder(responseBody)
 		err := dec.Decode(resp)
 		return nil, err
@@ -250,7 +250,7 @@ func (bot *BotAPI) GetUpdates(config UpdateConfig) ([]Update, error) {
 	}
 
 	var updates []Update
-	if bot.Debug {
+	if Debug {
 		fmt.Println(string(resp.Result))
 	}
 	err = json.Unmarshal(resp.Result, &updates)
@@ -299,7 +299,7 @@ func (bot *BotAPI) GetUpdatesChan(config UpdateConfig) UpdatesChannel {
 
 // StopReceivingUpdates stops the go routine which receives updates
 func (bot *BotAPI) StopReceivingUpdates() {
-	if bot.Debug {
+	if Debug {
 		log.Println("Stopping the update receiver routine...")
 	}
 	close(bot.shutdownChannel)

@@ -94,15 +94,15 @@ var (
 
 func main() {
 	var err error
+	// Set this to true to log all interactions with debox servers
+	boxbotapi.Debug = false
 	// bot, err = boxbotapi.NewBotAPI("<YOUR_BOT_TOKEN_HERE>") //replace with your token
-	// boxbotapi.SetHost("") //you can chage host here
+	boxbotapi.SetHost("")                            //you can chage host here
 	bot, err = boxbotapi.NewBotAPI("oPM1uU*****DC8") //replace with your token
 	if err != nil {
 		// Abort if something is wrong
 		log.Panic(err)
 	}
-	// Set this to true to log all interactions with debox servers
-	bot.Debug = false
 
 	u := boxbotapi.NewUpdate(0)
 	u.Timeout = 60
