@@ -263,8 +263,11 @@ func (bot *BotAPI) GetUpdates(config UpdateConfig) ([]Update, error) {
 // GetUpdatesChan starts and returns a channel for getting updates.
 func (bot *BotAPI) GetUpdatesChan(config UpdateConfig) UpdatesChannel {
 	ch := make(chan Update, bot.Buffer)
-
 	go func() {
+		if !MessageListener {
+			log.Println("Close the update receiver routine...")
+			return
+		}
 		for {
 			select {
 			case <-bot.shutdownChannel:

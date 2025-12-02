@@ -2,8 +2,9 @@ package boxbotapi
 
 // DeBox constants
 var (
-	APIEndpoint = "https://open.debox.pro/openapi/bot%s/%s"
-	Debug       = false
+	APIEndpoint     = "https://open.debox.pro/openapi/bot%s/%s"
+	Debug           = false
+	MessageListener = false
 )
 
 // Constant values for ChatActions
@@ -121,6 +122,28 @@ func (config MessageConfig) params() (Params, error) {
 
 func (config MessageConfig) method() string {
 	return "sendMessage"
+}
+
+// MessageConfig contains information about a SendMessage request.
+type MessageToFansConfig struct {
+	BaseChat
+	Text      string
+	ParseMode string
+}
+
+func (config MessageToFansConfig) params() (Params, error) {
+	params, err := config.BaseChat.params()
+	if err != nil {
+		return params, err
+	}
+	params.AddNonEmpty("text", config.Text)
+	params.AddNonEmpty("parse_mode", config.ParseMode)
+
+	return params, err
+}
+
+func (config MessageToFansConfig) method() string {
+	return "batchSendMessageToFans"
 }
 
 // EditMessageTextConfig allows you to modify the text in a message.

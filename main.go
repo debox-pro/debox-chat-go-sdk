@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	boxbotapi "github.com/debox-pro/debox-chat-go-sdk/boxbotapi"
 )
@@ -84,8 +85,12 @@ func main() {
 	// Pass cancellable context to goroutine
 	go receiveUpdates(ctx, updates)
 	// Tell the user the bot is online
-	log.Println("Start listening for updates. Press enter to stop")
-	//new stop
+	go func() {
+		for {
+			//keep alive
+			time.Sleep(time.Second * 30)
+		}
+	}()
 	select {}
 }
 func receiveUpdates(ctx context.Context, updates boxbotapi.UpdatesChannel) {

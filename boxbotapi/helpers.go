@@ -18,6 +18,15 @@ func NewMessageResponse(message *Message) MessageConfig {
 		Text: message.Text,
 	}
 }
+func NewMessageToFans(chatID, chatType string, text string) MessageToFansConfig {
+	return MessageToFansConfig{
+		BaseChat: BaseChat{
+			ChatID:   chatID,
+			ChatType: chatType,
+		},
+		Text: text,
+	}
+}
 
 // NewEditMessageText allows you to edit the text of a message.
 func NewEditMessageText(chatID, chatType string, messageID string, text string) EditMessageTextConfig {
