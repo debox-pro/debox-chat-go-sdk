@@ -36,7 +36,6 @@ var (
 	// Keyboard layout for the second menu. Two buttons, one per row
 	homeMenuMarkup = boxbotapi.NewInlineKeyboardMarkup(
 		boxbotapi.NewInlineKeyboardRow(
-			// boxbotapi.NewInlineKeyboardButtonData(yourButton, yourButton),
 			boxbotapi.NewInlineKeyboardButtonDataWithColor("", yourButton, "", yourButton, "#21C161"),
 			boxbotapi.NewInlineKeyboardButtonDataWithColor("", myButton, "", myButton, "#21C161"),
 		),
