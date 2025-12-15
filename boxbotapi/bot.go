@@ -268,6 +268,7 @@ func (bot *BotAPI) GetUpdatesChan(config UpdateConfig) UpdatesChannel {
 			log.Println("Close the update receiver routine...")
 			return
 		}
+		log.Println("start the update receiver routine...")
 		for {
 			select {
 			case <-bot.shutdownChannel:

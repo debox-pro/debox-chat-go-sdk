@@ -67,6 +67,8 @@ func main() {
 	var err error
 	// Set this to true to log all interactions with debox servers
 	boxbotapi.Debug = false
+	boxbotapi.MessageListener = true
+	log.Println("application started, debug mode is", boxbotapi.Debug, ", message listener is", boxbotapi.MessageListener)
 	// bot, err = boxbotapi.NewBotAPI("<YOUR_BOT_TOKEN_HERE>") //replace with your token
 	boxbotapi.SetHost("")                            //you can chage host here
 	bot, err = boxbotapi.NewBotAPI("oPM1uU*****DC8") //replace with your token

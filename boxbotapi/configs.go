@@ -143,7 +143,7 @@ func (config MessageToFansConfig) params() (Params, error) {
 }
 
 func (config MessageToFansConfig) method() string {
-	return "batchSendMessageToFans"
+	return "sendMessageToFans"
 }
 
 // EditMessageTextConfig allows you to modify the text in a message.
