@@ -246,7 +246,10 @@ type Message struct {
 	// Text is for text messages, the actual UTF-8 text of the message, 0-4096 characters;
 	//
 	// optional
-	Text string `json:"text,omitempty"`
+	Text         string `json:"text,omitempty"`
+	TextRaw      string `json:"text_raw,omitempty"`
+	MentionUsers []User `json:"mention_users,omitempty"`
+
 	// From is a sender, empty for messages sent to channels;
 	//
 	// optional
