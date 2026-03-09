@@ -12,7 +12,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 )
 
 // HTTPClient is the type needed for the bot to perform HTTP requests.
@@ -280,12 +279,6 @@ func (bot *BotAPI) GetUpdatesChan(config UpdateConfig) UpdatesChannel {
 			updates, err := bot.GetUpdates(config)
 			if err != nil {
 				log.Println("GetUpdates error: ", err)
-				if strings.Contains(err.Error(), "429") {
-					time.Sleep(time.Second * 1)
-				} else {
-					time.Sleep(time.Second * 3)
-				}
-
 				continue
 			}
 
