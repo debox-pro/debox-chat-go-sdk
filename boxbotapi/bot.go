@@ -156,7 +156,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params Params) (*APIResponse, er
 
 		return &apiResp, &Error{
 			Code:               apiResp.ErrorCode,
-			Message:            apiResp.Description,
+			Message:            apiResp.Message,
 			ResponseParameters: parameters,
 		}
 	}

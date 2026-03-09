@@ -8,11 +8,11 @@ import (
 // APIResponse is a response from the DeBox API with the result
 // stored raw.
 type APIResponse struct {
-	Ok          bool                `json:"ok"`
-	Result      json.RawMessage     `json:"result,omitempty"`
-	ErrorCode   int                 `json:"error_code,omitempty"`
-	Description string              `json:"description,omitempty"`
-	Parameters  *ResponseParameters `json:"parameters,omitempty"`
+	Ok         bool                `json:"ok"`
+	Result     json.RawMessage     `json:"result,omitempty"`
+	ErrorCode  int                 `json:"error_code,omitempty"`
+	Message    string              `json:"message"`
+	Parameters *ResponseParameters `json:"parameters,omitempty"`
 }
 
 // Error is an error containing extra information returned by the DeBox API.
