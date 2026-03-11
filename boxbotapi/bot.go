@@ -133,7 +133,7 @@ func (bot *BotAPI) MakeRequest(endpoint string, params Params) (*APIResponse, er
 		log.Printf("Endpoint: %s, params: %v,statuscode : %d\n", endpoint, params, resp.StatusCode)
 		return nil, Error{
 			Code:    resp.StatusCode,
-			Message: "429 too many requests",
+			Message: resp.Status,
 		}
 	}
 
