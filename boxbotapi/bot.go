@@ -3,15 +3,21 @@
 package boxbotapi
 
 import (
+	"crypto/sha1"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
+	radom "math/rand"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
+	"time"
+
+	"github.com/google/uuid"
 )
 
 // HTTPClient is the type needed for the bot to perform HTTP requests.
@@ -21,9 +27,10 @@ type HTTPClient interface {
 
 // BotAPI allows you to interact with the DeBox Bot API.
 type BotAPI struct {
-	Token  string `json:"token"`
-	Debug  bool   `json:"debug"`
-	Buffer int    `json:"buffer"`
+	Token     string `json:"token"`
+	ApiSecret string `json:"api_secret"`
+	Debug     bool   `json:"debug"`
+	Buffer    int    `json:"buffer"`
 
 	Self            User       `json:"-"`
 	Client          HTTPClient `json:"-"`
@@ -36,7 +43,8 @@ type BotAPI struct {
 // like: "https://open.debox.pro", without '/' at the end.
 func SetHost(host string) {
 	if len(host) > 0 {
-		APIEndpoint = fmt.Sprintf("%s/openapi/bot%%s/%%s", host)
+		// APIEndpoint = fmt.Sprintf("%s/openapi/bot%%s/%%s", host)
+		APIEndpoint = fmt.Sprintf("%s/openapi/%%s", host)
 	} else {
 		log.Printf("SetHost error,host is empty,use the default host now")
 	}
@@ -45,23 +53,23 @@ func SetHost(host string) {
 // NewBotAPI creates a new BotAPI instance.
 //
 // It requires a token, provided by @BotFather on DeBox.
-func NewBotAPI(token string) (*BotAPI, error) {
-	return NewBotAPIWithClient(token, APIEndpoint, &http.Client{})
+func NewBotAPI(token, apiSecret string) (*BotAPI, error) {
+	return NewBotAPIWithClient(token, apiSecret, APIEndpoint, &http.Client{})
 }
 
 // NewBotAPIWithAPIEndpoint creates a new BotAPI instance
 // and allows you to pass API endpoint.
 //
 // It requires a token, provided by @BotFather on DeBox and API endpoint.
-func NewBotAPIWithAPIEndpoint(token, apiEndpoint string) (*BotAPI, error) {
-	return NewBotAPIWithClient(token, apiEndpoint, &http.Client{})
+func NewBotAPIWithAPIEndpoint(token, apiSecret, apiEndpoint string) (*BotAPI, error) {
+	return NewBotAPIWithClient(token, apiSecret, apiEndpoint, &http.Client{})
 }
 
 // NewBotAPIWithClient creates a new BotAPI instance
 // and allows you to pass a http.Client.
 //
 // It requires a token, provided by @BotFather on DeBox and API endpoint.
-func NewBotAPIWithClient(token, apiEndpoint string, client HTTPClient) (*BotAPI, error) {
+func NewBotAPIWithClient(token, apiSecret, apiEndpoint string, client HTTPClient) (*BotAPI, error) {
 	//bmadd begin
 	if client == nil {
 		client = &http.Client{}
@@ -69,6 +77,7 @@ func NewBotAPIWithClient(token, apiEndpoint string, client HTTPClient) (*BotAPI,
 	//bmadd end
 	bot := &BotAPI{
 		Token:           token,
+		ApiSecret:       apiSecret,
 		Client:          client,
 		Buffer:          100,
 		shutdownChannel: make(chan interface{}),
@@ -104,6 +113,17 @@ func buildParams(in Params) url.Values {
 
 	return out
 }
+func (bot *BotAPI) getSignature() (nonce, timestamp, signature string) {
+	nonceInt := radom.Int()
+	nonce = strconv.Itoa(nonceInt)
+	timeInt64 := time.Now().Unix()
+	timestamp = strconv.FormatInt(timeInt64, 10)
+	// G401: SHA1用于第三方API兼容性，非安全目的
+	h := sha1.New()
+	_, _ = io.WriteString(h, bot.ApiSecret+nonce+timestamp)
+	signature = fmt.Sprintf("%x", h.Sum(nil))
+	return
+}
 
 // MakeRequest makes a request to a specific endpoint with our token.
 func (bot *BotAPI) MakeRequest(endpoint string, params Params) (*APIResponse, error) {
@@ -111,7 +131,9 @@ func (bot *BotAPI) MakeRequest(endpoint string, params Params) (*APIResponse, er
 		log.Printf("Endpoint: %s, params: %v\n", endpoint, params)
 	}
 
-	method := fmt.Sprintf(bot.apiEndpoint, bot.Token, endpoint)
+	// method := fmt.Sprintf(bot.apiEndpoint, bot.Token, endpoint)
+	method := fmt.Sprintf(bot.apiEndpoint, endpoint)
+	log.Printf("full url is: %s, params: %v\n", method, params)
 
 	values := buildParams(params)
 
@@ -120,7 +142,15 @@ func (bot *BotAPI) MakeRequest(endpoint string, params Params) (*APIResponse, er
 		return &APIResponse{}, err
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	//实现上面的签名计算规则
+	nonce, timestamp, signature := bot.getSignature()
 	req.Header.Add("X-API-KEY", bot.Token)
+	req.Header.Add("nonce", nonce)
+	req.Header.Add("timestamp", timestamp)
+	req.Header.Add("signature", signature)
+	//添加调试traceId
+	requestID := uuid.New().String()
+	req.Header.Add("X-Request-Id", requestID)
 
 	resp, err := bot.Client.Do(req)
 	if err != nil {
@@ -194,7 +224,7 @@ func (bot *BotAPI) decodeAPIResponse(responseBody io.Reader, resp *APIResponse) 
 // and so you may get this data from BotAPI.Self without the need for
 // another request.
 func (bot *BotAPI) GetMe() (User, error) {
-	resp, err := bot.MakeRequest("getMe", nil)
+	resp, err := bot.MakeRequest("bot/getMe", nil)
 	if err != nil {
 		return User{}, err
 	}

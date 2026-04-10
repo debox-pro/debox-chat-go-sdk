@@ -50,7 +50,7 @@ func (t testLogger) Printf(format string, v ...interface{}) {
 }
 
 func getBot(t *testing.T) (*BotAPI, error) {
-	bot, err := NewBotAPI(TestToken)
+	bot, err := NewBotAPI(TestToken,"")
 	Debug = true
 
 	logger := testLogger{t}
@@ -64,7 +64,7 @@ func getBot(t *testing.T) (*BotAPI, error) {
 }
 
 func TestNewBotAPI_notoken(t *testing.T) {
-	_, err := NewBotAPI("")
+	_, err := NewBotAPI("","")
 
 	if err == nil {
 		t.Error(err)
@@ -148,7 +148,7 @@ func TestSendRichText(t *testing.T) {
 
 func TestGetAndSend_Messages(t *testing.T) {
 	// bot, err := boxbotapi.NewBotAPI(os.Getenv("DEBOX_APITOKEN"))
-	bot, err := NewBotAPI(TestToken)
+	bot, err := NewBotAPI(TestToken,"")
 	if err != nil {
 		log.Panic(err)
 	}

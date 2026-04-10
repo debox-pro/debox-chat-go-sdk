@@ -2,7 +2,8 @@ package boxbotapi
 
 // DeBox constants
 var (
-	APIEndpoint     = "https://open.debox.pro/openapi/bot%s/%s"
+	// APIEndpoint     = "https://open.debox.pro/openapi/bot%s/%s"
+	APIEndpoint     = "https://open.debox.pro/openapi/%s"
 	Debug           = false
 	MessageListener = false
 )
@@ -121,7 +122,7 @@ func (config MessageConfig) params() (Params, error) {
 }
 
 func (config MessageConfig) method() string {
-	return "sendMessage"
+	return "bot/sendMessage"
 }
 
 // MessageConfig contains information about a SendMessage request.
@@ -143,7 +144,7 @@ func (config MessageToFansConfig) params() (Params, error) {
 }
 
 func (config MessageToFansConfig) method() string {
-	return "sendMessageToFans"
+	return "bot/sendMessageToFans"
 }
 
 // EditMessageTextConfig allows you to modify the text in a message.
@@ -166,7 +167,7 @@ func (config EditMessageTextConfig) params() (Params, error) {
 }
 
 func (config EditMessageTextConfig) method() string {
-	return "editMessageText"
+	return "bot/editMessageText"
 }
 
 // UpdateConfig contains information about a GetUpdates request.
@@ -178,7 +179,7 @@ type UpdateConfig struct {
 }
 
 func (UpdateConfig) method() string {
-	return "getUpdates"
+	return "bot/getUpdates"
 }
 
 func (config UpdateConfig) params() (Params, error) {
