@@ -24,6 +24,9 @@ const (
 	ModeMarkdown   = "Markdown"
 	ModeMarkdownV2 = "MarkdownV2"
 	ModeHTML       = "HTML"
+	ModeVideo      = "video"
+	ModeImage      = "image"
+	ModeFile       = "file"
 	ModeRichText   = "richtext"
 )
 

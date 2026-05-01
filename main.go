@@ -70,8 +70,8 @@ func main() {
 	boxbotapi.MessageListener = true
 	log.Println("application started, debug mode is", boxbotapi.Debug, ", message listener is", boxbotapi.MessageListener)
 	// bot, err = boxbotapi.NewBotAPI("<YOUR_BOT_TOKEN_HERE>") //replace with your token
-	boxbotapi.SetHost("")                            //you can chage host here
-	bot, err = boxbotapi.NewBotAPI("oPM1uU*****DC8") //replace with your token
+	// bot, err = boxbotapi.NewBotAPI("oPM1uU*****DC8", "") //replace with your token
+	bot, err = boxbotapi.NewBotAPI("9tAwKmXodvMs9zdLR9xAmGTxbN09", "") //replace with your token
 	if err != nil {
 		// Abort if something is wrong
 		log.Panic(err)
