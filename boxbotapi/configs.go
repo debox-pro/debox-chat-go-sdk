@@ -109,8 +109,10 @@ func (edit BaseEdit) params() (Params, error) {
 // MessageConfig contains information about a SendMessage request.
 type MessageConfig struct {
 	BaseChat
-	Text      string
-	ParseMode string
+	Text        string
+	ParseMode   string
+	MentionType int      `json:"mention_type"  form:"mention_type"`
+	MentionIds  []string `json:"mention_ids"  form:"mention_ids"`
 }
 
 func (config MessageConfig) params() (Params, error) {
@@ -120,6 +122,8 @@ func (config MessageConfig) params() (Params, error) {
 	}
 	params.AddNonEmpty("text", config.Text)
 	params.AddNonEmpty("parse_mode", config.ParseMode)
+	params.AddFirstValid("mention_type", config.MentionType)
+	params.AddInterface("mention_ids", config.MentionIds)
 
 	return params, err
 }
@@ -165,7 +169,6 @@ func (config EditMessageTextConfig) params() (Params, error) {
 
 	params["text"] = config.Text
 	params.AddNonEmpty("parse_mode", config.ParseMode)
-
 	return params, err
 }
 
