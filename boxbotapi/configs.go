@@ -29,6 +29,11 @@ const (
 	ModeFile       = "file"
 	ModeRichText   = "richtext"
 )
+const (
+	//mention type
+	MentionTypeAll  = 1
+	MentionTypePart = 2
+)
 
 // Constant values for update types
 const (
