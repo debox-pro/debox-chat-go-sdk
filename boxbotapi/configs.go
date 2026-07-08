@@ -28,6 +28,7 @@ const (
 	ModeImage      = "image"
 	ModeFile       = "file"
 	ModeRichText   = "richtext"
+	ModeText       = "text"
 )
 const (
 	//mention type
